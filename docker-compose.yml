@@ -1,0 +1,94 @@
+version: '3.8'
+
+services:
+  fastapi:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fastapi-container-proyecto
+    ports:
+      - "8001:8000"
+    networks:
+      - backend
+    environment:
+      - POSTGRES_HOST=${POSTGRES_HOST}
+      - POSTGRES_PORT=${POSTGRES_PORT}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - SECRET_KEY=${SECRET_KEY}
+      - ALGORITHM=${ALGORITHM}
+      - ACCESS_TOKEN_EXPIRE_MINUTES=${ACCESS_TOKEN_EXPIRE_MINUTES}
+      - BD_DETAILS=${BD_DETAILS}
+      - MONGODB_URI=${MONGODB_URI}
+      - MONGODB_DB=${MONGODB_DB}
+      - MONGODB_USERNAME=${MONGODB_USERNAME}
+      - MONGODB_PASSWORD=${MONGODB_PASSWORD}
+    volumes:
+      #- ./app:/app  # Volumen para reflejar cambios locales automáticamente
+      #Si tu código está en la raíz del proyecto y no dentro de un directorio app, usa esta versión:
+      - .:/app
+    #command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload  # Habilitar recarga automática
+    #ejecutar main.py afuera de carpeta app
+    #command: uvicorn app/server/app:app --host 0.0.0.0 --port 8000 --reload  # Habilitar recarga automática
+    command: python app/main.py
+    restart: always  # Reiniciar en caso de errores
+
+    depends_on:
+      - postgres
+      - mongo
+
+  postgres:
+    image: postgres:13
+    container_name: postgres-container-proyecto
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5434:5432"
+    networks:
+      - backend
+    volumes:
+      - postgres-data-proyecto:/var/lib/postgresql/data
+    restart: always  # Reinicia el contenedor si falla
+
+  mongo:
+    image: mongo:latest
+    container_name: mongo-container-proyecto
+    environment:
+      #MONGO_INITDB_ROOT_USERNAME: test_proyecto  # Nombre del usuario administrador
+      #MONGO_INITDB_ROOT_PASSWORD: test_proyecto_pass  # Contraseña del usuario administrador
+      #MONGO_INITDB_DATABASE: admin  # Nombre de la base de datos inicial
+      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_USERNAME}  # Nombre del usuario administrador
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASSWORD}  # Contraseña del usuario administrador
+      MONGO_INITDB_DATABASE: ${MONGODB_DB}  # Nombre de la base de datos inicial
+    ports:
+      - "27019:27017"  # Puedes dejarlo expuesto para acceder de manera externa (si es necesario)
+    networks:
+      - backend
+    volumes:
+      - mongo-data-proyecto:/data/db  # Volumen persistente
+    restart: always  # Reinicia el contenedor si falla
+  
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin-proyecto
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    ports:
+      - "5051:80"
+    networks:
+      - backend
+    restart: always  # Reinicia el contenedor si falla
+
+
+volumes:
+  postgres-data-proyecto:
+  mongo-data-proyecto:
+    #driver:local
+
+networks:
+  backend:
+    driver: bridge

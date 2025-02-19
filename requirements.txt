@@ -1,0 +1,17 @@
+#motor==3.2.0
+#uvicorn==0.22.0
+#fastapi==0.100.0
+#pydantic[email]==2.0.3
+#python-decouple==3.8
+
+# Tested on Python 3.11.3
+fastapi
+uvicorn
+asyncpg
+motor
+python-dotenv
+sqlalchemy
+databases
+pydantic
+psycopg2
+python-decouple

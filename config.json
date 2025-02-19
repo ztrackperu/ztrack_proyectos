@@ -1,0 +1,37 @@
+
+{
+    "id": 1,
+    "user_id": 22,
+    "config_data": {
+      "_id": 0,
+      "set_point": 1,
+      "return_air": 1,
+      "temp_supply_1": 1,
+      "ambient_air": 1,
+      "compress_coil_1": 1,
+      "consumption_ph_1": 1,
+      "consumption_ph_2": {
+        "$numberLong": "1"
+      },
+      "consumption_ph_3": 1,
+      "created_at": 1,
+      "evaporation_coil": 1,
+      "humidity_set_point": 1,
+      "latitud": 1,
+      "longitud": 1,
+      "power_kwh": 1,
+      "power_state": 1,
+      "relative_humidity": 1
+    },
+    "config_graph": [
+        {"label":"set_point","hidden":false,"color":"#f1c40f"},
+        {"label":"return_air","hidden":false,"color":"#ec7063"},
+        {"label":"temp_supply_1","hidden":false,"color":"#27ae60"},
+        {"label":"relative_humidity","hidden":true,"color":"#e4c1f4"},
+        {"label":"ambient_air","hidden":true,"color":"#9ccc65"},
+        {"label":"evaporation_coil","hidden":false,"color":"#95a5a6"},
+        {"label":"created_at","hidden":true,"color":"#fff"},
+        {"label":"power_state","hidden":false,"color":"#f7f2e2"}
+    ],
+    "estado": 1
+  }
