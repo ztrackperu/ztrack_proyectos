@@ -9,8 +9,8 @@ load_dotenv()
 #MONGO_DETAILS = config("MONGO_DETAILS")  # read environment variable MONGODB_USERNAME MONGODB_URI
 #mongodb://test_proyecto:test_proyecto_pass@localhost:27019/
 #MONGO_DETAILS = "mongodb://"+config("MONGODB_USERNAME")+":"+config("MONGODB_PASSWORD")+"@"+config("MONGODB_URI")
-GENIAL = f"mongodb://{os.getenv('MONGODB_USERNAME')}:{os.getenv('MONGODB_PASSWORD')}@{os.getenv('MONGODB_URI')}/{os.getenv('MONGODB_DB')}"
-
+#GENIAL = f"mongodb://{os.getenv('MONGODB_USERNAME')}:{os.getenv('MONGODB_PASSWORD')}@{os.getenv('MONGODB_URI')}/{os.getenv('MONGODB_DB')}"
+GENIAL = os.getenv("MONGO_DETAILS") 
 print("*************")
 print(GENIAL)
 print("*************")
@@ -32,6 +32,6 @@ client = AsyncIOMotorClient(GENIAL)
 database_mongo = client[mongo_db_name] 
 #database_mongo =client.mongo_db_name
 
-async def collection(data):
+def collection(data):
     data_collection = database_mongo.get_collection(data)
     return data_collection

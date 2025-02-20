@@ -17,13 +17,6 @@ from server.models.datos import (
 )
 router = APIRouter()
 
-@router.get("/health")
-async def health_check():
-    mongo_status = await check_mongo_connection()
-    if mongo_status:
-        return {"status": "ok", "mongo": "connected"}
-    else:
-        return {"status": "error", "mongo": "not connected"}
 
 
 @router.post("/", response_description="Datos agregados a la base de datos.")
