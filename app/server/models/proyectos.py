@@ -13,7 +13,7 @@ class ProyectosSchema(BaseModel) :
     observaciones_proyecto :str = Field(...)
     encargado_proyecto :str = Field(...)
     prioridad_proyecto :str = Field(...)
-    prioridad_proyecto :str = None|None
+    url_proyecto :str = None|None
     estado_proyecto:Optional[int] | None =1
     progreso_proyecto:Optional[int] | None =0
     updated_at: Optional[datetime] | None =datetime.now()
@@ -35,6 +35,7 @@ class ProyectosSchema(BaseModel) :
             "prioridad_proyecto":"ALTA",
             "estado_proyecto":1,
             "progreso_proyecto":0,
+            "url_proyecto":"test/test.jpg",
             "created_at":None,
             "updated_at":None,
             "user_c":0,
