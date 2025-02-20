@@ -13,6 +13,7 @@ class ProyectosSchema(BaseModel) :
     observaciones_proyecto :str = Field(...)
     encargado_proyecto :str = Field(...)
     prioridad_proyecto :str = Field(...)
+    prioridad_proyecto :str = None=None
     estado_proyecto:Optional[int] | None =1
     progreso_proyecto:Optional[int] | None =0
     updated_at: Optional[datetime] | None =datetime.now()
