@@ -16,30 +16,33 @@ class ProyectosSchema(BaseModel) :
     url_proyecto :str = Field(...)
     estado_proyecto:Optional[int] | None =1
     progreso_proyecto:Optional[int] | None =0
-    updated_at: Optional[datetime] | None =datetime.now()
-    created_at: Optional[datetime] | None =datetime.now()
-    user_c:Optional[int] | None =0
-    user_m:Optional[int] | None =0
+    user_cierra_proyecto :Optional[int] | None =0 
+    fecha_cierra_proyecto : Optional[datetime] | None =datetime.now() 
+    cantidad_actividades :Optional[int] | None =0 
+    updated_at: Optional[datetime] | None =datetime.now() #generico
+    created_at: Optional[datetime] | None =datetime.now() #generico
+    user_c:Optional[int] | None =0 #generico
+    user_m:Optional[int] | None =0 #generico
     class Config:
         json_schema_extra = {
             "example": {
-            "id_proyecto":0,
+            "id_proyecto":None,
             "cotizacion_proyecto": "10020250451",
             "cliente_proyecto":"FRANK DONIO - ZGROUP USA ",
-            "activar_reportar":1,
+            "activar_reportar":None,
             "fecha_solicitud_proyecto":None,
             "fecha_limite_proyecto":None,
             "nombre_proyecto":"40RH BLAST CHILLER 2XL CON CARACTERISTICAS DE MADURADOR",
             "observaciones_proyecto":"Piso plano 5 máquinas Reefer nuevas MAGNUM PLUS MP4000 (4 reefer y 1 madurador ambos con sistema de aire forzado)",
             "encargado_proyecto":"JHON TELLO ARIAS",
             "prioridad_proyecto":"ALTA",
-            "estado_proyecto":1,
-            "progreso_proyecto":0,
+            "estado_proyecto":None,
+            "progreso_proyecto":None,
             "url_proyecto":"test/test.jpg",
             "created_at":None,
             "updated_at":None,
-            "user_c":0,
-            "user_m":0
+            "user_c":None,
+            "user_m":None
             }
         }
 

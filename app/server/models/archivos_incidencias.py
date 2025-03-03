@@ -2,11 +2,12 @@ from typing import Optional,List
 from datetime import  datetime
 from pydantic import BaseModel, Field
 
-class FotoReporteSchema(BaseModel) :
-    id_foto_reporte :Optional[int] | None =0
-    reporte_id : int = Field(...)
-    url_foto_reporte : str = Field(...)
-    estado_foto_reporte :Optional[int] | None =1 
+class ArchivoIncidenteSchema(BaseModel) :
+    id_archivo_incidente :Optional[int] | None =0
+    incidente_id : int = Field(...)
+    estado_archivo_incidente : Optional[int] | None =1
+    url_archivo_incidente : str = Field(...)
+    descripcion_archivo_incidente :str = Field(...)
     updated_at: Optional[datetime] | None =datetime.now() #generico
     created_at: Optional[datetime] | None =datetime.now() #generico
     user_c:Optional[int] | None =0 #generico
@@ -15,13 +16,15 @@ class FotoReporteSchema(BaseModel) :
     class Config:
         json_schema_extra = {
             "example": {
-            "id_foto_reporte":None,
-            "reporte_id":1,
-            "url_foto_reporte": "fotos/reporte/piso_bueno.png",
-            "created_at":None,
-            "updated_at":None,
-            "user_c":0,
-            "user_m":0
+                "id_archivo_incidente":None,
+                "incidente_id":1,
+                "estado_incidente":None
+                "url_archivo_incidente": "archivos/incidentes/fallo_electrico.png",
+                "descripcion_archivo_incidente" :"Lado superior izquierdo  del techo "
+                "created_at":None,
+                "updated_at":None,
+                "user_c":0,
+                "user_m":0
             }
         }
 

@@ -5,6 +5,8 @@ from fastapi.middleware.cors import CORSMiddleware
 #from server.routes.datos import router as DatosRouter
 
 from server.routes.proyectos import router as ProyectosRouter
+from server.routes.usuarios import router as UsuariosRouter
+
 #from server.routes.receta import router as RecetasRouter
 
 #from server.routes.proceso import router as ProcesosRouter
@@ -27,6 +29,8 @@ app.add_middleware(
 )
 
 app.include_router(ProyectosRouter, tags=["Proyectos"], prefix="/Proyectos")
+app.include_router(UsuariosRouter, tags=["Usuarios"], prefix="/Usuarios")
+
 #app.include_router(ComandosRouter, tags=["Comandos"], prefix="/Comandos")
 #app.include_router(RecetasRouter, tags=["Recetas"], prefix="/Recetas")
 #app.include_router(ProcesosRouter, tags=["Procesos"], prefix="/Procesos")
