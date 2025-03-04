@@ -136,7 +136,7 @@ async def guardar_usuario(usuario_data: dict) -> dict:
                 log =procesar_log("USUARIO EDITADO",usuario_data['user_c'],usuario_data['nombres_usuario'])
                 guardar_log = await log_general_collection.insert_one(log)
                 
-                proyecto_ok = {"id_usuario":usuario_data['id_usuario'],"nombre_usuario":usuario_data['id_proyecto']}
+                proyecto_ok = {"id_usuario":usuario_data['id_usuario'],"nombre_usuario":usuario_data['user_proyecto']}
             #actualizar vida de token 
             tiempo_extendido =datetime.now() + timedelta(minutes=30)
             extender_token = await token_proyecto_collection.update_one({"token_proyecto":usuario_data['token_proyecto'],"estado_token":1},{"$set":{"fecha_fin":tiempo_extendido}}) 
