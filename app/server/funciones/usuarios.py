@@ -161,9 +161,27 @@ def convertir_fecha_fin(fecha_str):
     except ValueError:
         return datetime.now() 
 
+async def ver_usuario(usuario_data: dict) -> dict:
+    print(usuario_data)
+    validar_token = await token_proyecto_collection.find_one({"token_proyecto":usuario_data['token_proyecto'],"estado_token":1},{"_id":0})
+    if validar_token :
+        if validar_token['fecha_fin']>fecha_actual :
+            if usuario_data['especifico']:
+                #realizar secuencia para ver informacion especifica 
+                especifico = await usuarios_collection.find_one({"id_usuario":usuario_data['especifico'],"estado_usuario":1},{"_id":0 ,"clave_proyecto":0,"token_proyecto":0})
+                return especifico
+            else :
+                return "SIN ITEMS ESPECIFICO"
+        else :
+            #cancelar el token 
+            invalidar_token = await token_proyecto_collection.update_one({"token_proyecto":usuario_data['token_proyecto'],"estado_token":1},{"$set":{"estado_token":0,"fecha_invalidar":fecha_actual}}) 
+            return "TOKEN_INVALIDO"
+    else :
+        #no hay token valido 
+        return "TOKEN_INVALIDO"
+
 async def listar_usuarios(usuario_data: dict) -> dict:
     validar_token = await token_proyecto_collection.find_one({"token_proyecto":usuario_data['token_proyecto'],"estado_token":1},{"_id":0})
-    print("jejejjejeejj")
     if validar_token :
         if validar_token['fecha_fin']>fecha_actual :
             notificacions = []
@@ -191,7 +209,6 @@ async def listar_usuarios(usuario_data: dict) -> dict:
             log =procesar_log("LISTADO DE USUARIOS POR ",usuario_data['id_usuario'],usuario_data['tipo_usuario'])
             guardar_log = await log_general_collection.insert_one(log)
             return res 
-
         else :
             #cancelar el token 
             invalidar_token = await token_proyecto_collection.update_one({"token_proyecto":usuario_data['token_proyecto'],"estado_token":1},{"$set":{"estado_token":0,"fecha_invalidar":fecha_actual}}) 

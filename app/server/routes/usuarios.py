@@ -8,6 +8,7 @@ from server.funciones.usuarios import (
     login_proyecto,
     listar_usuarios,
     super_usuario,
+    ver_usuario,
 )
 #Aqui importamos el modelo necesario para la clase 
 from server.models.usuarios import (
@@ -50,8 +51,16 @@ async def listar_usuarios_ok(datos: ConsultarSchema = Body(...)):
     if  new_notificacion:
         return ResponseModel(new_notificacion, "ok")
     else :
-        return ErrorResponseModel("USUARIO/CLAVE INCORRECTO", 404, "NO SE HA ENCONTRADO")
-    #return "ola"
+        return ErrorResponseModel("VERIFICA TUS DATOS", 404, "NO SE HA ENCONTRADO")
+
+@router.post("/verusuario", response_description="Datos Listados de los usuarios.")
+async def ver_usuarios_ok(datos: ConsultarSchema = Body(...)):
+    datos = jsonable_encoder(datos) 
+    new_notificacion = await ver_usuario(datos)
+    if  new_notificacion:
+        return ResponseModel(new_notificacion, "ok")
+    else :
+        return ErrorResponseModel("verifica tus datos", 404, "NO SE HA ENCONTRADO")
 
 @router.get("/superusuario/", response_description="Datos recuperados")
 async def get_super():
@@ -59,7 +68,6 @@ async def get_super():
     if notificacions:
         return ResponseModel(notificacions, "Datos  recuperados exitosamente.")
     return ResponseModel(notificacions, "Lista vacía devuelta")
-
 
 @router.get("/{imei}", response_description="Datos recuperados")
 async def get_notificacions(imei:str):
