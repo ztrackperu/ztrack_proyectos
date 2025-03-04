@@ -55,6 +55,7 @@ def encriptar_token (usuario,apellido):
 
 async def login_proyecto(login_data:dict)->dict :
     #consulta a la base de datos de usuarios 
+    print(login_data)
     coincidencia_usuario_pass = await usuarios_collection.find_one({"user_proyecto":login_data['user_proyecto'] ,"clave_proyecto":login_data['clave_proyecto'],
     "estado_usuario":1},{"_id":0,"id_usuario":1,"user_proyecto":1,"tipo_usuario":1,"nombres_usuario":1,"apellidos_usuario":1,"url_foto_usuario":1})
     if(coincidencia_usuario_pass) :
@@ -67,7 +68,10 @@ async def login_proyecto(login_data:dict)->dict :
                 coincidencia_usuario_pass["token_proyecto"] = encriptar_token(coincidencia_usuario_pass['user_proyecto'],coincidencia_usuario_pass['apellidos_usuario'])
                 secuencia_token = await crear_token(coincidencia_usuario_pass["id_usuario"],coincidencia_usuario_pass["token_proyecto"])
                 guardar_token = await token_proyecto_collection.insert_one(secuencia_token)
-                return coincidencia_usuario_pass
+            else :
+                coincidencia_usuario_pass["token_proyecto"] =validar_token['token_proyecto']
+            return coincidencia_usuario_pass
+
         else :
             #asignar token 
             coincidencia_usuario_pass["token_proyecto"] = encriptar_token(coincidencia_usuario_pass['user_proyecto'],coincidencia_usuario_pass['apellidos_usuario'])
