@@ -15,7 +15,7 @@ fecha_actual =datetime.now()
 
 async def crear_token(usuario_id,token):
     ids_proyectos = await ids_collection.find_one({"id_token": {"$exists": True}})
-    id_token = ids_proyectos['id_token']+1 if id_token else 1
+    id_token = ids_proyectos['id_token']+1 if ids_proyectos['id_token'] else 1
     json_data = {
         "id_token":id_token,
         "usuario_id":usuario_id,
