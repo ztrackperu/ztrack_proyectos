@@ -196,10 +196,12 @@ async def listar_usuarios(usuario_data: dict) -> dict:
                 query= {}
             else :
                 if usuario_data['tipo_usuario']==1 :
-                    query = {"created_at": {"$gte": fecha_inicio, "$lte": fecha_fin,"estado_usuario":1}}
-
+                    #query = {"created_at": {"$gte": fecha_inicio, "$lte": fecha_fin,"estado_usuario":1}}
+                    query = {"estado_usuario":1}
                 elif usuario_data['tipo_usuario']==2 :
-                    query = {"created_at": {"$gte": fecha_inicio, "$lte": fecha_fin,"estado_usuario":1,"user_c":usuario_data['id_usuario']}}
+                    #query = {"created_at": {"$gte": fecha_inicio, "$lte": fecha_fin,"estado_usuario":1,"user_c":usuario_data['id_usuario']}}
+                    query = {"estado_usuario":1,"user_c":usuario_data['id_usuario']}
+
                 else :
                     query = {"created_at": {"$gte": fecha_inicio, "$lte": fecha_fin,"estado_usuario":0,"user_c":usuario_data['id_usuario']}}
             async for notificacion in usuarios_collection.find(query,{"_id":0,"clave_proyecto":0,"token_proyecto":0}).sort({"created_at":-1}):
