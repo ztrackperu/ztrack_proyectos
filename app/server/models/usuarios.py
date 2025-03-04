@@ -9,6 +9,7 @@ class UsuarioSchema(BaseModel) :
     estado_usuario : Optional[int] | None =1 
     tipo_usuario : Optional[int] | None =2 
     dni_usuario : str = Field(...)
+    token_proyecto : Optional[str] | None ="blablabla"
     nombres_usuario : str = Field(...)
     apellidos_usuario :str = Field(...)
     correo_usuario :str = Field(...)
@@ -27,6 +28,7 @@ class UsuarioSchema(BaseModel) :
             "estado_usuario":None,
             "tipo_usuario":None,
             "dni_usuario" :"73144309",
+            "token_proyecto":None,
             "nombres_usuario" :"Luis Pablo",
             "apellidos_usuario" :" Marcelo Perea",
             "correo_usuario" : "ztrack@zgroup.com.pe",
@@ -50,6 +52,22 @@ class LoginSchema(BaseModel) :
             }
         }
 
+class ConsultarSchema(BaseModel):
+    id_usuario: Optional[int] | None =0
+    tipo_usuario: Optional[int] | None =0
+    token_proyecto : Optional[str] | None ="blablabla"
+    especifico: Optional[int] | None =0
+    fecha_inicio: Optional[datetime] | None=None
+    fecha_fin: Optional[datetime] | None =None
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "id_usuario": 0,
+                "tipo_usuario": 0,
+                "token_proyecto":"0f2adb0aee3de894ac4e28bfce85a54f5a80b06cb4118b374892a1248b02a395",
+                "especifico" :0
+            }
+        }
 
 #respuesta cuando todo esta bien
 def ResponseModel(data, message):

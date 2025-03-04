@@ -6,6 +6,8 @@ from fastapi.responses import JSONResponse
 from server.funciones.usuarios import (
     guardar_usuario,
     login_proyecto,
+    listar_usuarios,
+    super_usuario,
 )
 #Aqui importamos el modelo necesario para la clase 
 from server.models.usuarios import (
@@ -13,6 +15,7 @@ from server.models.usuarios import (
     ResponseModel,
     UsuarioSchema,
     LoginSchema,
+    ConsultarSchema,
 )
 router = APIRouter()
 
@@ -34,6 +37,28 @@ async def add_usuario(datos: LoginSchema = Body(...)):
         return ResponseModel(new_notificacion, "ok")
     else :
         return ErrorResponseModel("USUARIO/CLAVE INCORRECTO", 404, "NO SE HA ENCONTRADO")
+
+@router.post("/listar", response_description="Datos Listados de los usuarios.")
+async def listar_usuarios_ok(datos: ConsultarSchema = Body(...)):
+    datos = jsonable_encoder(datos) 
+    print("********")
+    print(datos)  
+    print("********")
+
+    new_notificacion = await listar_usuarios(datos)
+
+    if  new_notificacion:
+        return ResponseModel(new_notificacion, "ok")
+    else :
+        return ErrorResponseModel("USUARIO/CLAVE INCORRECTO", 404, "NO SE HA ENCONTRADO")
+    #return "ola"
+
+@router.get("/superusuario/", response_description="Datos recuperados")
+async def get_super():
+    notificacions = await super_usuario()
+    if notificacions:
+        return ResponseModel(notificacions, "Datos  recuperados exitosamente.")
+    return ResponseModel(notificacions, "Lista vacía devuelta")
 
 
 @router.get("/{imei}", response_description="Datos recuperados")
