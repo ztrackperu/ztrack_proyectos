@@ -294,24 +294,21 @@ async def cambiar_pass(usuario_data: dict) -> dict:
     validar_token = await token_proyecto_collection.find_one({"token_proyecto":usuario_data['token_proyecto'],"estado_token":1},{"_id":0})
     if validar_token :
         if validar_token['fecha_fin']>fecha_actual :
-            if usuario_data['especifico']:
-                #realizar secuencia para cambiar estado 0 
-                objeto = {"clave_proyecto":usuario_data['nuevo_pass'],"user_m":usuario_data['id_usuario'],"updated_at":datetime.now()}   
-                especifico = await usuarios_collection.find_one({"id_usuario":usuario_data['id_usuario'],"clave_proyecto":usuario_data['pass_actual'], "estado_usuario":1},{"_id":0 ,"user_proyecto":1})             
-                if especifico and (usuario_data['nuevo_pass']==usuario_data['nuevo_pass_2']):
-                    especifico_ok = await usuarios_collection.update_one({"id_usuario":usuario_data['id_usuario'],"estado_usuario":1},{"$set":objeto})
-                    res = "OK"
-                else :
-                    res = "FAIL"
-                #Guardar en Log 
-                log =procesar_log("Se cambia pass de  el usuario :  ",usuario_data['id_usuario'],especifico['user_proyecto'])
-                guardar_log = await log_general_collection.insert_one(log)
-                #actualizar vida de token 
-                tiempo_extendido =validar_token['fecha_fin'] + timedelta(minutes=30) if usuario_data['id_usuario']==1 else datetime.now() + timedelta(minutes=30)
-                extender_token = await token_proyecto_collection.update_one({"token_proyecto":usuario_data['token_proyecto'],"estado_token":1},{"$set":{"fecha_fin":tiempo_extendido}}) 
-                return res
+            #realizar secuencia para cambiar estado 0 
+            objeto = {"clave_proyecto":usuario_data['nuevo_pass'],"user_m":usuario_data['id_usuario'],"updated_at":datetime.now()}   
+            especifico = await usuarios_collection.find_one({"id_usuario":usuario_data['id_usuario'],"clave_proyecto":usuario_data['pass_actual'], "estado_usuario":1},{"_id":0 ,"user_proyecto":1})             
+            if especifico and (usuario_data['nuevo_pass']==usuario_data['nuevo_pass_2']):
+                especifico_ok = await usuarios_collection.update_one({"id_usuario":usuario_data['id_usuario'],"estado_usuario":1},{"$set":objeto})
+                res = "OK"
             else :
-                return "SIN_ESPECIFICO"
+                res = "FAIL"
+            #Guardar en Log 
+            log =procesar_log("Se cambia pass de  el usuario :  ",usuario_data['id_usuario'],especifico['user_proyecto'])
+            guardar_log = await log_general_collection.insert_one(log)
+            #actualizar vida de token 
+            tiempo_extendido =validar_token['fecha_fin'] + timedelta(minutes=30) if usuario_data['id_usuario']==1 else datetime.now() + timedelta(minutes=30)
+            extender_token = await token_proyecto_collection.update_one({"token_proyecto":usuario_data['token_proyecto'],"estado_token":1},{"$set":{"fecha_fin":tiempo_extendido}}) 
+            return res
         else :
             #cancelar el token 
             invalidar_token = await token_proyecto_collection.update_one({"token_proyecto":usuario_data['token_proyecto'],"estado_token":1},{"$set":{"estado_token":0,"fecha_invalidar":fecha_actual}}) 
