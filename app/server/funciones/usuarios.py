@@ -239,7 +239,7 @@ async def eliminar_usuarios(usuario_data: dict) -> dict:
                 objeto = {"estado_usuario":0,"user_m":usuario_data['id_usuario'],"updated_at":datetime.now()}   
                 especifico = await usuarios_collection.find_one({"id_usuario":usuario_data['especifico'],"estado_usuario":1},{"_id":0 ,"user_proyecto":1})             
                 if especifico :
-                    especifico_ok = await usuarios_collection.update_one({"id_usuario":usuario_data['especifico'],"estado_usuario":1},objeto)
+                    especifico_ok = await usuarios_collection.update_one({"id_usuario":usuario_data['especifico'],"estado_usuario":1},{"$set":objeto})
                     res = "OK"
                 else :
                     res = "FAIL"
@@ -269,7 +269,7 @@ async def reestablecer_usuarios(usuario_data: dict) -> dict:
                 objeto = {"estado_usuario":1,"user_m":usuario_data['id_usuario'],"updated_at":datetime.now()}   
                 especifico = await usuarios_collection.find_one({"id_usuario":usuario_data['especifico'],"estado_usuario":0},{"_id":0 ,"user_proyecto":1})             
                 if especifico :
-                    especifico_ok = await usuarios_collection.update_one({"id_usuario":usuario_data['especifico'],"estado_usuario":1},objeto)
+                    especifico_ok = await usuarios_collection.update_one({"id_usuario":usuario_data['especifico'],"estado_usuario":1},{"$set":objeto})
                     res = "OK"
                 else :
                     res = "FAIL"
@@ -299,7 +299,7 @@ async def cambiar_pass(usuario_data: dict) -> dict:
                 objeto = {"clave_proyecto":usuario_data['nuevo_pass'],"user_m":usuario_data['id_usuario'],"updated_at":datetime.now()}   
                 especifico = await usuarios_collection.find_one({"id_usuario":usuario_data['id_usuario'],"clave_proyecto":usuario_data['pass_actual'], "estado_usuario":1},{"_id":0 ,"user_proyecto":1})             
                 if especifico and (usuario_data['nuevo_pass']==usuario_data['nuevo_pass_2']):
-                    especifico_ok = await usuarios_collection.update_one({"id_usuario":usuario_data['id_usuario'],"estado_usuario":1},objeto)
+                    especifico_ok = await usuarios_collection.update_one({"id_usuario":usuario_data['id_usuario'],"estado_usuario":1},{"$set":objeto})
                     res = "OK"
                 else :
                     res = "FAIL"
@@ -331,7 +331,7 @@ async def reestablecer_pass(usuario_data: dict) -> dict:
                     new_pass = "@"+especifico['user_proyecto']
                     hash_pass = hashlib.sha256(new_pass.encode()).hexdigest()
                     objeto = {"clave_proyecto":hash_pass,"user_m":usuario_data['id_usuario'],"updated_at":datetime.now()}  
-                    especifico_ok = await usuarios_collection.update_one({"id_usuario":usuario_data['especifico'],"estado_usuario":1},objeto)
+                    especifico_ok = await usuarios_collection.update_one({"id_usuario":usuario_data['especifico'],"estado_usuario":1},{"$set":objeto})
                     res = "OK"
                 else :
                     res = "FAIL"
