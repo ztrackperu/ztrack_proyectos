@@ -5,7 +5,7 @@ from pydantic import BaseModel, Field
 class UsuarioSchema(BaseModel) :
     id_usuario :Optional[int] | None =0
     user_proyecto : str = Field(...)
-    clave_proyecto :  str = Field(...)
+    clave_proyecto : Optional[str] | None ="SINCLAVE"
     estado_usuario : Optional[int] | None =1 
     tipo_usuario : Optional[int] | None =2 
     dni_usuario : str = Field(...)
@@ -14,8 +14,8 @@ class UsuarioSchema(BaseModel) :
     apellidos_usuario :str = Field(...)
     correo_usuario :str = Field(...)
     url_foto_usuario : Optional[str] | None ="fotos/usuarios/test_usuario.png"
-    updated_at: Optional[datetime] | None =datetime.now() #generico
-    created_at: Optional[datetime] | None =datetime.now() #generico
+    updated_at: Optional[datetime] | None =None #generico
+    created_at: Optional[datetime] | None =None #generico
     user_c:Optional[int] | None =0 #generico
     user_m:Optional[int] | None =0 #generico
 
@@ -66,6 +66,22 @@ class ConsultarSchema(BaseModel):
                 "tipo_usuario": 0,
                 "token_proyecto":"0f2adb0aee3de894ac4e28bfce85a54f5a80b06cb4118b374892a1248b02a395",
                 "especifico" :0
+            }
+        }
+class ModificarPassSchema(BaseModel):
+    id_usuario: Optional[int] | None =0
+    token_proyecto : Optional[str] | None ="NA"
+    pass_actual :Optional[str] | None ="NA"
+    nuevo_pass :Optional[str] | None ="NA"
+    nuevo_pass_2 :Optional[str] | None ="NA"
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "id_usuario": 0,
+                "token_proyecto":"0f2adb0aee3de894ac4e28bfce85a54f5a80b06cb4118b374892a1248b02a395",
+                "pass_actual" :"NA",
+                "nuevo_pass" :"NA",
+                "nuevo_pass_2" :"NA"
             }
         }
 

@@ -9,6 +9,10 @@ from server.funciones.usuarios import (
     listar_usuarios,
     super_usuario,
     ver_usuario,
+    eliminar_usuarios,
+    reestablecer_usuarios,
+    cambiar_pass,
+    reestablecer_pass
 )
 #Aqui importamos el modelo necesario para la clase 
 from server.models.usuarios import (
@@ -17,6 +21,7 @@ from server.models.usuarios import (
     UsuarioSchema,
     LoginSchema,
     ConsultarSchema,
+    ModificarPassSchema,
 )
 router = APIRouter()
 
@@ -68,6 +73,43 @@ async def get_super():
     if notificacions:
         return ResponseModel(notificacions, "Datos  recuperados exitosamente.")
     return ResponseModel(notificacions, "Lista vacía devuelta")
+
+@router.post("/eliminarusuario", response_description="Datos Listados de los usuarios.")
+async def eliminar_usuario_ok(datos: ConsultarSchema = Body(...)):
+    datos = jsonable_encoder(datos) 
+    new_notificacion = await eliminar_usuarios(datos)
+    if  new_notificacion:
+        return ResponseModel(new_notificacion, "ok")
+    else :
+        return ErrorResponseModel("verifica tus datos", 404, "NO SE HA ENCONTRADO")
+
+@router.post("/restablecerusuario", response_description="Datos Listados de los usuarios.")
+async def restablecer_usuario_ok(datos: ConsultarSchema = Body(...)):
+    datos = jsonable_encoder(datos) 
+    new_notificacion = await reestablecer_usuarios(datos)
+    if  new_notificacion:
+        return ResponseModel(new_notificacion, "ok")
+    else :
+        return ErrorResponseModel("verifica tus datos", 404, "NO SE HA ENCONTRADO")
+    
+@router.post("/cambiarpass", response_description="Datos Listados de los usuarios.")
+async def cambiar_pass_ok(datos: ModificarPassSchema = Body(...)):
+    datos = jsonable_encoder(datos) 
+    new_notificacion = await cambiar_pass(datos)
+    if  new_notificacion:
+        return ResponseModel(new_notificacion, "ok")
+    else :
+        return ErrorResponseModel("verifica tus datos", 404, "NO SE HA ENCONTRADO")
+
+@router.post("/restablecerpass", response_description="Datos Listados de los usuarios.")
+async def restablecerpass_ok(datos: ConsultarSchema = Body(...)):
+    datos = jsonable_encoder(datos) 
+    new_notificacion = await reestablecer_pass(datos)
+    if  new_notificacion:
+        return ResponseModel(new_notificacion, "ok")
+    else :
+        return ErrorResponseModel("verifica tus datos", 404, "NO SE HA ENCONTRADO")
+
 
 @router.get("/{imei}", response_description="Datos recuperados")
 async def get_notificacions(imei:str):
