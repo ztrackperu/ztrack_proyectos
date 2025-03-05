@@ -39,7 +39,7 @@ def procesar_log(evento,usuario,campo) :
     mensaje2 =str(evento)+" : "+str(campo)+" , hecho por : "+str(usuario)
     agrupado = {
         "evento":mensaje2,
-        "fecha" :fecha_actual
+        "fecha" :datetime.now()
     }
     return agrupado
 
