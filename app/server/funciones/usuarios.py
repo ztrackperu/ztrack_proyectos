@@ -204,13 +204,13 @@ async def listar_usuarios(usuario_data: dict) -> dict:
             fecha_fin = convertir_fecha_fin(usuario_data['fecha_fin']) if usuario_data['fecha_fin'] else datetime.now() 
             #logica si funciona
             if usuario_data['tipo_usuario']==1 :
-                query = {"created_at": {"$gte": fecha_inicio, "$lte": fecha_fin},"estado_usuario":1}
+                query = {"created_at": {"$gte": fecha_inicio, "$lte": fecha_fin}}
                 #query = {"estado_usuario":1}
             elif usuario_data['tipo_usuario']==2 :
-                query = {"created_at": {"$gte": fecha_inicio, "$lte": fecha_fin,"estado_usuario":1,"user_c":usuario_data['id_usuario']}}
+                query = {"created_at": {"$gte": fecha_inicio, "$lte": fecha_fin,"estado_usuario":1}}
                 #query = {"estado_usuario":1,"user_c":usuario_data['id_usuario']}
             else :
-                query = {"created_at": {"$gte": fecha_inicio, "$lte": fecha_fin,"estado_usuario":0,"user_c":usuario_data['id_usuario']}}
+                query = {"created_at": {"$gte": fecha_inicio, "$lte": fecha_fin,"estado_usuario":1,"user_c":usuario_data['id_usuario']}}
             print("*****ACUMULADO********")
             print(query)
             print("*****ACUMULADO********")
