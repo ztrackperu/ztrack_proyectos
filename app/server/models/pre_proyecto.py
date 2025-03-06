@@ -10,7 +10,7 @@ class PreProyectosSchema(BaseModel) :
     cantidad_pre_derivados :Optional[int] | None =0 
     updated_at: Optional[datetime] | None =None #generico
     created_at: Optional[datetime] | None =None #generico
-    user_c:Optional[int] | None =None #generico
+    user_c:Optional[int] | None =0 #generico
     user_m:Optional[int] | None =None #generico
     class Config:
         json_schema_extra = {
@@ -20,10 +20,30 @@ class PreProyectosSchema(BaseModel) :
             "observaciones_pre_proyecto":"Piso plano 5 máquinas Reefer nuevas MAGNUM PLUS MP4000 (4 reefer y 1 madurador ambos con sistema de aire forzado)",
             "estado_pre_proyecto":None,
             "cantidad_pre_derivados":None,
+            "token_proyecto":"0f2adb0aee3de894ac4e28bf",
             "created_at":None,
             "updated_at":None,
-            "user_c":None,
+            "user_c":0,
             "user_m":None
+            }
+        }
+
+class ConsultarSchema(BaseModel):
+    id_usuario: Optional[int] | None =0
+    tipo_usuario: Optional[int] | None =0
+    token_proyecto : Optional[str] | None ="blablabla"
+    especifico: Optional[int] | None =0
+    fecha_inicio: Optional[datetime] | None=None
+    fecha_fin: Optional[datetime] | None =None
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "id_usuario": 0,
+                "tipo_usuario": 0,
+                "token_proyecto":"0f2adb0aee3de894ac4e28bfce85a54f5",
+                "especifico" :0,
+                "fecha_inicio" :None,
+                "fecha_fin" :None
             }
         }
 

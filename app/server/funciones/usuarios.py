@@ -105,12 +105,13 @@ async def super_usuario() :
 
 
 async def guardar_usuario(usuario_data: dict) -> dict:
-    validar_token = await token_proyecto_collection.find_one({"token_proyecto":usuario_data['token_proyecto'],"estado_token":1},{"_id":0})
+    validar_token = await token_proyecto_collection.find_one({"token_proyecto":usuario_data['token_proyecto'],"estado_token":1,"usuario_id":usuario_data['user_c']},{"_id":0})
     if validar_token and usuario_data['user_c']:
         if validar_token['fecha_fin']>fecha_actual :            
             coincidencia_usuario = await usuarios_collection.find_one({"user_proyecto":usuario_data['user_proyecto'] ,"estado_usuario":1},{"_id":0})
             proyecto_ok ="FAIL"
             id_value = usuario_data['id_usuario'] if 'id_usuario' in usuario_data else 0
+            usuario_data = {k: v for k, v in usuario_data.items() if k not in ['token_proyecto']}
             if id_value==0 :
                 #se crea el registro  , se busca coincidencia
                 if coincidencia_usuario :
@@ -131,7 +132,7 @@ async def guardar_usuario(usuario_data: dict) -> dict:
                         log =procesar_log("USUARIO GUARDADO",usuario_data['user_c'],usuario_data['user_proyecto'])
                         guardar_log = await log_general_collection.insert_one(log)
                     else :
-                        return "NO SE ENVIO CLAVE"
+                        return "SINCLAVE"
             else : 
                 #se actualiza la informacion 
                 usuario_data['updated_at']=datetime.now()
@@ -172,7 +173,7 @@ def convertir_fecha_fin(fecha_str):
         return datetime.now() 
 
 async def ver_usuario(usuario_data: dict) -> dict:
-    validar_token = await token_proyecto_collection.find_one({"token_proyecto":usuario_data['token_proyecto'],"estado_token":1},{"_id":0})
+    validar_token = await token_proyecto_collection.find_one({"token_proyecto":usuario_data['token_proyecto'],"estado_token":1,"usuario_id":usuario_data['id_usuario']},{"_id":0})
     if validar_token :
         if validar_token['fecha_fin']>fecha_actual :
             if usuario_data['especifico']:
@@ -196,7 +197,7 @@ async def ver_usuario(usuario_data: dict) -> dict:
         return "TOKEN_INVALIDO"
 
 async def listar_usuarios(usuario_data: dict) -> dict:
-    validar_token = await token_proyecto_collection.find_one({"token_proyecto":usuario_data['token_proyecto'],"estado_token":1},{"_id":0})
+    validar_token = await token_proyecto_collection.find_one({"token_proyecto":usuario_data['token_proyecto'],"estado_token":1,"usuario_id":usuario_data['id_usuario']},{"_id":0})
     if validar_token :
         if validar_token['fecha_fin']>fecha_actual :
             notificacions = []
@@ -231,7 +232,7 @@ async def listar_usuarios(usuario_data: dict) -> dict:
         return "TOKEN_INVALIDO"
 
 async def eliminar_usuarios(usuario_data: dict) -> dict:
-    validar_token = await token_proyecto_collection.find_one({"token_proyecto":usuario_data['token_proyecto'],"estado_token":1},{"_id":0})
+    validar_token = await token_proyecto_collection.find_one({"token_proyecto":usuario_data['token_proyecto'],"estado_token":1,"usuario_id":usuario_data['id_usuario']},{"_id":0})
     if validar_token :
         if validar_token['fecha_fin']>fecha_actual :
             if usuario_data['especifico']:
@@ -261,7 +262,7 @@ async def eliminar_usuarios(usuario_data: dict) -> dict:
         return "TOKEN_INVALIDO"
 
 async def reestablecer_usuarios(usuario_data: dict) -> dict:
-    validar_token = await token_proyecto_collection.find_one({"token_proyecto":usuario_data['token_proyecto'],"estado_token":1},{"_id":0})
+    validar_token = await token_proyecto_collection.find_one({"token_proyecto":usuario_data['token_proyecto'],"estado_token":1,"usuario_id":usuario_data['id_usuario']},{"_id":0})
     if validar_token :
         if validar_token['fecha_fin']>fecha_actual :
             if usuario_data['especifico']:
@@ -291,7 +292,7 @@ async def reestablecer_usuarios(usuario_data: dict) -> dict:
         return "TOKEN_INVALIDO"
 
 async def cambiar_pass(usuario_data: dict) -> dict:
-    validar_token = await token_proyecto_collection.find_one({"token_proyecto":usuario_data['token_proyecto'],"estado_token":1},{"_id":0})
+    validar_token = await token_proyecto_collection.find_one({"token_proyecto":usuario_data['token_proyecto'],"estado_token":1,"usuario_id":usuario_data['id_usuario']},{"_id":0})
     if validar_token :
         if validar_token['fecha_fin']>fecha_actual :
             #realizar secuencia para cambiar estado 0 
@@ -318,7 +319,7 @@ async def cambiar_pass(usuario_data: dict) -> dict:
         return "TOKEN_INVALIDO"
 
 async def reestablecer_pass(usuario_data: dict) -> dict:
-    validar_token = await token_proyecto_collection.find_one({"token_proyecto":usuario_data['token_proyecto'],"estado_token":1},{"_id":0})
+    validar_token = await token_proyecto_collection.find_one({"token_proyecto":usuario_data['token_proyecto'],"estado_token":1,"usuario_id":usuario_data['id_usuario']},{"_id":0})
     if validar_token :
         if validar_token['fecha_fin']>fecha_actual :
             if usuario_data['especifico'] and (usuario_data['tipo_usuario']==1) :
