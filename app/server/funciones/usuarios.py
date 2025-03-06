@@ -25,6 +25,8 @@ async def crear_token(usuario_id,token):
         "fecha_inicio" :datetime.now(),
         "fecha_fin" :datetime.now() + timedelta(minutes=30)
     }
+    #actualizar token 
+    ids_proyectos = await ids_collection.update_ok({"_id":ids_proyectos['_id']},{"set":{"id_token":id_token} })
     return json_data
 
 def procesar_historico(mensaje,user_c,objeto):
@@ -212,6 +214,10 @@ async def listar_usuarios(usuario_data: dict) -> dict:
                 query = {"created_at": {"$gte": fecha_inicio, "$lte": fecha_fin},"estado_usuario":1,"user_c":usuario_data['user_c']}
             async for notificacion in usuarios_collection.find(query,{"_id":0,"id_usuario":1,"user_proyecto":1,"nombres_usuario":1,"estado_usuario":1,"tipo_usuario":1,"created_at":1,"apellidos_usuario":1}).sort({"created_at":-1}):
                 notificacions.append(notificacion)
+            print("__________")
+            print(query)
+            print("__________")
+            print(notificacions)
             res = {"fecha_inicio" :fecha_inicio,"fecha_fin" :fecha_fin ,"resultado" :notificacions}
             #guardar en log
             log =procesar_log("LISTADO DE USUARIOS POR ",usuario_data['id_usuario'],usuario_data['tipo_usuario'])
