@@ -75,8 +75,8 @@ async def login_proyecto(login_data:dict)->dict :
             else :
                 coincidencia_usuario_pass["token_proyecto"] =validar_token['token_proyecto']
                 #Guardar en Log 
-                log =procesar_log("USUARIO logeado  ",login_data['user_proyecto'],coincidencia_usuario_pass['id_usuario'])
-                guardar_log = await log_general_collection.insert_one(log)
+            log =procesar_log("USUARIO logeado  ",login_data['user_proyecto'],coincidencia_usuario_pass['id_usuario'])
+            guardar_log = await log_general_collection.insert_one(log)
             return coincidencia_usuario_pass
 
         else :
