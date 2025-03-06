@@ -26,6 +26,10 @@ async def crear_token(usuario_id,token):
         "fecha_fin" :datetime.now() + timedelta(minutes=30)
     }
     #actualizar token 
+    print("**********")
+    print(ids_proyectos)
+    print("**********")
+
     ids_proyectos = await ids_collection.update_one({"_id":ids_proyectos['_id']},{"set":{"id_token":id_token} })
     return json_data
 
