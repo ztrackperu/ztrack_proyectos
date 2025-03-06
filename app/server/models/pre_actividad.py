@@ -10,6 +10,7 @@ class PreActividadSchema(BaseModel) :
     peso_pre_actividad : Optional[int] | None = 0
     estado_pre_actividad : Optional[int] | None = 1
     pre_requisitos_pre_actividad :Optional[int] | None =[]
+    token_proyecto : Optional[str] | None ="blablabla"
     updated_at: Optional[datetime] | None =None #generico
     created_at: Optional[datetime] | None =None #generico
     user_c:Optional[int] | None =0 #generico

@@ -9,6 +9,7 @@ class PreDerivadosSchema(BaseModel) :
     estado_pre_derivado:Optional[int] | None =1
     valor_pre_derivado:Optional[int] | None =0
     cantidad_actividades :Optional[int] | None =0 
+    token_proyecto : Optional[str] | None ="blablabla"
     updated_at: Optional[datetime] | None =None #generico
     created_at: Optional[datetime] | None =None #generico
     user_c:Optional[int] | None =0 #generico

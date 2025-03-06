@@ -6,12 +6,11 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from server.routes.proyectos import router as ProyectosRouter
 from server.routes.usuarios import router as UsuariosRouter
+from server.routes.pre_proyecto import router as PreProyectoRouter
+from server.routes.pre_derivado import router as PreDerivadoRouter
+from server.routes.pre_actividad import router as PreActividadRouter
+from server.routes.pre_validacion import router as PreValidacionRouter
 
-#from server.routes.receta import router as RecetasRouter
-
-#from server.routes.proceso import router as ProcesosRouter
-#from server.routes.supervisado import router as SupervisadosRouter
-#from server.routes.control import router as ControlRouter
 
 app = FastAPI(
     title="Integracion ZTRACK PROYECTOS GENERALES",
@@ -30,12 +29,11 @@ app.add_middleware(
 
 app.include_router(ProyectosRouter, tags=["Proyectos"], prefix="/Proyectos")
 app.include_router(UsuariosRouter, tags=["Usuarios"], prefix="/Usuarios")
+app.include_router(PreProyectoRouter, tags=["PreProyecto"], prefix="/PreProyecto")
+app.include_router(PreDerivadoRouter, tags=["PreDerivado"], prefix="/PreDerivado")
+app.include_router(PreActividadRouter, tags=["PreActividad"], prefix="/PreActividad")
+app.include_router(PreValidacionRouter, tags=["PreValidacion"], prefix="/PreValidacion")
 
-#app.include_router(ComandosRouter, tags=["Comandos"], prefix="/Comandos")
-#app.include_router(RecetasRouter, tags=["Recetas"], prefix="/Recetas")
-#app.include_router(ProcesosRouter, tags=["Procesos"], prefix="/Procesos")
-#app.include_router(SupervisadosRouter, tags=["Supervisador"], prefix="/Supervisador")
-#app.include_router(ControlRouter, tags=["Control"], prefix="/Control")
 
 
 @app.get("/", tags=["Root"])

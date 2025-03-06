@@ -1,4 +1,4 @@
-from typing import Optional,List
+from typing import Optional,List,Union
 from datetime import  datetime
 from pydantic import BaseModel, Field
 
@@ -7,11 +7,12 @@ class PreValidacionSchema(BaseModel) :
     nombre_pre_validacion : str = Field(...)
     descripcion_pre_validacion : str = Field(...)
     estado_pre_validacion :Optional[int] | None =1
-    estandar_pre_validacion : str = Field(...)
-    updated_at: Optional[datetime] | None =datetime.now() #generico
-    created_at: Optional[datetime] | None =datetime.now() #generico
+    estandar_pre_validacion : List[Union[int, str]] =Field(...)
+    token_proyecto : Optional[str] | None ="blablabla"
+    updated_at: Optional[datetime] | None =None #generico
+    created_at: Optional[datetime] | None =None #generico
     user_c:Optional[int] | None =0 #generico
-    user_m:Optional[int] | None =0 #generico
+    user_m:Optional[int] | None =None #generico
 
     class Config:
         json_schema_extra = {
@@ -21,6 +22,7 @@ class PreValidacionSchema(BaseModel) :
             "descripcion_pre_validacion":"Se valida los grados de inclinacion /elevacion del piso  ",
             "estado_pre_validacion":None,
             "estandar_pre_validacion":[-1,1],
+            "token_proyecto":"0f2adb0aee3de894ac4e28bf",
             "created_at":None,
             "updated_at":None,
             "user_c":0,

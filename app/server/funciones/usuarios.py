@@ -265,7 +265,7 @@ async def reestablecer_usuarios(usuario_data: dict) -> dict:
                 objeto = {"estado_usuario":1,"user_m":usuario_data['id_usuario'],"updated_at":datetime.now()}   
                 especifico = await usuarios_collection.find_one({"id_usuario":usuario_data['especifico'],"estado_usuario":0},{"_id":0 ,"user_proyecto":1})             
                 if especifico :
-                    especifico_ok = await usuarios_collection.update_one({"id_usuario":usuario_data['especifico'],"estado_usuario":1},{"$set":objeto})
+                    especifico_ok = await usuarios_collection.update_one({"id_usuario":usuario_data['especifico'],"estado_usuario":0},{"$set":objeto})
                     res = "OK"
                 else :
                     res = "FAIL"

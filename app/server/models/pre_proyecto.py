@@ -8,6 +8,7 @@ class PreProyectosSchema(BaseModel) :
     observaciones_pre_proyecto :str = Field(...)
     estado_pre_proyecto:Optional[int] | None =1
     cantidad_pre_derivados :Optional[int] | None =0 
+    token_proyecto : Optional[str] | None ="blablabla"
     updated_at: Optional[datetime] | None =None #generico
     created_at: Optional[datetime] | None =None #generico
     user_c:Optional[int] | None =0 #generico
