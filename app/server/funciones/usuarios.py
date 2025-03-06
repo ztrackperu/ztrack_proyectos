@@ -32,7 +32,7 @@ def procesar_historico(mensaje,user_c,objeto):
     filter_proyecto = {k: v for k, v in objeto.items() if k not in [ 'user_c','user_m','updated_at','created_at']}
     filter_proyecto['mensaje'] = mensaje
     filter_proyecto['user_evento']=user_c
-    filter_proyecto['fecha_evento']=fecha_actual
+    filter_proyecto['fecha_evento']=datetime.now()
     return filter_proyecto
 
 def procesar_log(evento,usuario,campo) :
@@ -207,16 +207,10 @@ async def listar_usuarios(usuario_data: dict) -> dict:
             #logica si funciona
             if usuario_data['tipo_usuario']==1 :
                 query = {"created_at": {"$gte": fecha_inicio, "$lte": fecha_fin}}
-                #query = {"estado_usuario":1}
             elif usuario_data['tipo_usuario']==2 :
-                query = {"created_at": {"$gte": fecha_inicio, "$lte": fecha_fin,"estado_usuario":1}}
-                #query = {"estado_usuario":1,"user_c":usuario_data['id_usuario']}
+                query = {"created_at": {"$gte": fecha_inicio, "$lte": fecha_fin},"estado_usuario":1}
             else :
-                query = {"created_at": {"$gte": fecha_inicio, "$lte": fecha_fin,"estado_usuario":1,"user_c":usuario_data['id_usuario']}}
-            print("*****ACUMULADO********")
-            print(query)
-            print("*****ACUMULADO********")
-
+                query = {"created_at": {"$gte": fecha_inicio, "$lte": fecha_fin},"estado_usuario":1,"user_c":usuario_data['id_usuario']}
             async for notificacion in usuarios_collection.find(query,{"_id":0,"id_usuario":1,"user_proyecto":1,"nombres_usuario":1,"estado_usuario":1,"tipo_usuario":1,"created_at":1,"apellidos_usuario":1}).sort({"created_at":-1}):
                 notificacions.append(notificacion)
             res = {"fecha_inicio" :fecha_inicio,"fecha_fin" :fecha_fin ,"resultado" :notificacions}

@@ -36,7 +36,7 @@ def convertir_fecha_fin(fecha_str):
     except ValueError:
         return datetime.now() 
 
-async def guardar_usuario(pre_proyecto_data: dict) -> dict:
+async def guardar_pre_proyecto(pre_proyecto_data: dict) -> dict:
     validar_token = await token_proyecto_collection.find_one({"token_proyecto":pre_proyecto_data['token_proyecto'],"estado_token":1,"usuario_id":pre_proyecto_data['user_c']},{"_id":0})
     if validar_token and pre_proyecto_data['user_c']:
         if validar_token['fecha_fin']>fecha_actual :            
@@ -149,7 +149,7 @@ async def listar_pre_proyecto(pre_proyecto_data: dict) -> dict:
         #no hay token valido 
         return "TOKEN_INVALIDO"
 
-async def eliminar_usuarios(pre_proyecto_data: dict) -> dict:
+async def eliminar_pre_proyecto(pre_proyecto_data: dict) -> dict:
     validar_token = await token_proyecto_collection.find_one({"token_proyecto":pre_proyecto_data['token_proyecto'],"estado_token":1,"usuario_id":pre_proyecto_data['id_usuario']},{"_id":0})
     if validar_token :
         if validar_token['fecha_fin']>fecha_actual :
@@ -179,7 +179,7 @@ async def eliminar_usuarios(pre_proyecto_data: dict) -> dict:
         #no hay token valido 
         return "TOKEN_INVALIDO"
 
-async def reestablecer_usuarios(pre_proyecto_data: dict) -> dict:
+async def reestablecer_pre_proyecto(pre_proyecto_data: dict) -> dict:
     validar_token = await token_proyecto_collection.find_one({"token_proyecto":pre_proyecto_data['token_proyecto'],"estado_token":1,"usuario_id":pre_proyecto_data['id_usuario']},{"_id":0})
     if validar_token :
         if validar_token['fecha_fin']>fecha_actual :
