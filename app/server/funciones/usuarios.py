@@ -27,11 +27,7 @@ async def crear_token(usuario_id,token):
         "fecha_inicio" :datetime.now(),
         "fecha_fin" :datetime.now() + timedelta(minutes=30)
     }
-    #actualizar token 
-    print("**********")
-    print("**********")
-
-    ids_proyectos = await ids_collection.update_one({"_id":ObjectId(ids_proyectos['_id'])},{"set":{"id_token":id_token} })
+    ids_proyectos = await ids_collection.update_one({"_id":ObjectId(ids_proyectos['_id'])},{"$set":{"id_token":id_token} })
     return json_data
 
 def procesar_historico(mensaje,user_c,objeto):
