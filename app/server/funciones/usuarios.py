@@ -111,6 +111,7 @@ async def guardar_usuario(usuario_data: dict) -> dict:
             coincidencia_usuario = await usuarios_collection.find_one({"user_proyecto":usuario_data['user_proyecto'] ,"estado_usuario":1},{"_id":0})
             proyecto_ok ="FAIL"
             id_value = usuario_data['id_usuario'] if 'id_usuario' in usuario_data else 0
+            token_data = usuario_data['token_proyecto']
             usuario_data = {k: v for k, v in usuario_data.items() if k not in ['token_proyecto']}
             if id_value==0 :
                 #se crea el registro  , se busca coincidencia
@@ -150,11 +151,11 @@ async def guardar_usuario(usuario_data: dict) -> dict:
                 proyecto_ok = {"id_usuario":usuario_data['id_usuario'],"nombre_usuario":usuario_data['user_proyecto']}
             #actualizar vida de token 
             tiempo_extendido =validar_token['fecha_fin'] + timedelta(minutes=30) if usuario_data['user_c']==1 else datetime.now() + timedelta(minutes=30)
-            extender_token = await token_proyecto_collection.update_one({"token_proyecto":usuario_data['token_proyecto'],"estado_token":1},{"$set":{"fecha_fin":tiempo_extendido}}) 
+            extender_token = await token_proyecto_collection.update_one({"token_proyecto":token_data,"estado_token":1},{"$set":{"fecha_fin":tiempo_extendido}}) 
             return proyecto_ok
         else :
             #cancelar el token 
-            invalidar_token = await token_proyecto_collection.update_one({"token_proyecto":usuario_data['token_proyecto'],"estado_token":1},{"$set":{"estado_token":0,"fecha_invalidar":fecha_actual}}) 
+            invalidar_token = await token_proyecto_collection.update_one({"token_proyecto":token_data,"estado_token":1},{"$set":{"estado_token":0,"fecha_invalidar":fecha_actual}}) 
             return "TOKEN_INVALIDO"
     else :
         #no hay token valido 
