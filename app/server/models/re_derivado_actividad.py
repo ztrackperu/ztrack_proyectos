@@ -9,8 +9,8 @@ class ReDerivadoActividadSchema(BaseModel) :
     estado_re_derivado_actividad:Optional[int] | None =1
     updated_at: Optional[datetime] | None =None #generico
     created_at: Optional[datetime] | None =None #generico
-    user_c:Optional[int] | None =0 #generico
-    user_m:Optional[int] | None =None #generico
+    fecha_inicio: Optional[str] | None=None
+    fecha_fin: Optional[str] | None =None
     class Config:
         json_schema_extra = {
             "example": {

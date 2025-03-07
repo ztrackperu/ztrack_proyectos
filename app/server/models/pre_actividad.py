@@ -40,8 +40,8 @@ class ConsultarSchema(BaseModel):
     tipo_usuario: Optional[int] | None =0
     token_proyecto : Optional[str] | None ="blablabla"
     especifico: Optional[int] | None =0
-    fecha_inicio: Optional[datetime] | None=None
-    fecha_fin: Optional[datetime] | None =None
+    fecha_inicio: Optional[str] | None=None
+    fecha_fin: Optional[str] | None =None
     class Config:
         json_schema_extra = {
             "example": {
