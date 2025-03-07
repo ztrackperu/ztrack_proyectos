@@ -133,10 +133,10 @@ async def listar_pre_proyecto(pre_proyecto_data: dict) -> dict:
                 query = {"created_at": {"$gte": fecha_inicio, "$lte": fecha_fin}}
                 #query = {"estado_pre_proyecto":1}
             elif pre_proyecto_data['tipo_usuario']==2 :
-                query = {"created_at": {"$gte": fecha_inicio, "$lte": fecha_fin,"estado_pre_proyecto":1}}
+                query = {"created_at": {"$gte": fecha_inicio, "$lte": fecha_fin},"estado_pre_proyecto":1}
                 #query = {"estado_pre_proyecto":1,"user_c":pre_proyecto_data['id_usuario']}
             else :
-                query = {"created_at": {"$gte": fecha_inicio, "$lte": fecha_fin,"estado_pre_proyecto":1,"user_c":pre_proyecto_data['id_usuario']}}
+                query = {"created_at": {"$gte": fecha_inicio, "$lte": fecha_fin},"estado_pre_proyecto":1,"user_c":pre_proyecto_data['id_usuario']}
             async for notificacion in pre_proyecto_collection.find(query,{"_id":0,"id_pre_proyecto":1,"nombre_pre_proyecto":1,"observaciones_pre_proyecto":1,"estado_pre_proyecto":1,"created_at":1}).sort({"created_at":-1}):
                 notificacions.append(notificacion)
             res = {"fecha_inicio" :fecha_inicio,"fecha_fin" :fecha_fin ,"resultado" :notificacions}
