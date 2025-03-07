@@ -212,7 +212,7 @@ async def listar_usuarios(usuario_data: dict) -> dict:
             elif usuario_data['tipo_usuario']==2 :
                 query = {"created_at": {"$gte": fecha_inicio, "$lte": fecha_fin},"estado_usuario":1}
             else :
-                query = {"created_at": {"$gte": fecha_inicio, "$lte": fecha_fin},"estado_usuario":1,"user_c":usuario_data['user_c']}
+                query = {"created_at": {"$gte": fecha_inicio, "$lte": fecha_fin},"estado_usuario":1,"user_c":usuario_data['id_usuario']}
             async for notificacion in usuarios_collection.find(query,{"_id":0,"id_usuario":1,"user_proyecto":1,"nombres_usuario":1,"estado_usuario":1,"tipo_usuario":1,"created_at":1,"apellidos_usuario":1}).sort({"created_at":-1}):
                 notificacions.append(notificacion)
             print("__________")
