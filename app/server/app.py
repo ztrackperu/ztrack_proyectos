@@ -10,6 +10,8 @@ from server.routes.pre_proyecto import router as PreProyectoRouter
 from server.routes.pre_derivado import router as PreDerivadoRouter
 from server.routes.pre_actividad import router as PreActividadRouter
 from server.routes.pre_validacion import router as PreValidacionRouter
+from server.routes.re_proyecto_derivado import router as ReProyectoDerivadoRouter
+
 
 
 app = FastAPI(
@@ -33,6 +35,8 @@ app.include_router(PreProyectoRouter, tags=["PreProyecto"], prefix="/PreProyecto
 app.include_router(PreDerivadoRouter, tags=["PreDerivado"], prefix="/PreDerivado")
 app.include_router(PreActividadRouter, tags=["PreActividad"], prefix="/PreActividad")
 app.include_router(PreValidacionRouter, tags=["PreValidacion"], prefix="/PreValidacion")
+app.include_router(ReProyectoDerivadoRouter, tags=["ReProyectoDerivado"], prefix="/ReProyectoDerivado")
+
 
 
 

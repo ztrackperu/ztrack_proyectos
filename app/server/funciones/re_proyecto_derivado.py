@@ -1,0 +1,184 @@
+import hashlib
+import json
+#from server.database import collection 
+from server.database import database_mongo ,client,collection
+from datetime import datetime,timedelta
+
+#Estanadar para funciones de agregar , editar , buscar , listar 
+token_proyecto_collection =  collection("token_proyecto")
+log_general_collection =  collection("log_general")
+re_proyecto_derivado_collection = collection("re_proyecto_derivado")
+pre_derivado_collection = collection("pre_derivado")
+pre_proyecto_collection = collection("pre_proyecto")
+ids_collection = collection("ids_proyectos")
+h_re_proyecto_derivado_collection = collection("h_re_proyecto_derivado")
+fecha_actual =datetime.now()
+
+def procesar_historico(mensaje,user_c,objeto):
+    filter_proyecto = {k: v for k, v in objeto.items() if k not in [ 'user_c','user_m','updated_at','created_at']}
+    filter_proyecto['mensaje'] = mensaje
+    filter_proyecto['user_evento']=user_c
+    filter_proyecto['fecha_evento']=fecha_actual
+    return filter_proyecto
+def procesar_log(evento,usuario,campo) :
+    mensaje2 =str(evento)+" : "+str(campo)+" , hecho por : "+str(usuario)
+    agrupado = {"evento":mensaje2,"fecha" :datetime.now()}
+    return agrupado
+def filtrar_no_none(data: dict) -> dict:
+    """Filtra y devuelve solo los elementos del diccionario que no tienen valores None."""
+    return {k: v for k, v in data.items() if v is not None}
+
+def validar_formato(data):
+    if isinstance(data, dict):  # Verificar que sea un diccionario
+        if set(data.keys()) == {"pre_derivado_id", "cantidad"}:  # Verificar claves exactas
+            if isinstance(data["pre_derivado_id"], int) and isinstance(data["cantidad"], int):  # Verificar valores
+                return True
+    return False
+
+async def guardar_re_proyecto_derivado(re_proyecto_derivado: dict) -> dict:
+    validar_token = await token_proyecto_collection.find_one({"token_proyecto":re_proyecto_derivado['token_proyecto'],"estado_token":1,"usuario_id":re_proyecto_derivado['user_c']},{"_id":0})
+    if validar_token and re_proyecto_derivado['user_c']:
+        if validar_token['fecha_fin']>fecha_actual :
+            token_data =re_proyecto_derivado['token_proyecto']            
+            proyecto_ok ="FAIL"
+            #hacer las validaciones del fomato para insertar 
+            #verificamos que el pre_proyecto_id exista 
+            paso_uno = await pre_proyecto_collection.find_one({"id_pre_proyecto":re_proyecto_derivado['pre_proyecto_id'],"estado_pre_proyecto":1 },{"_id":0,"id_pre_proyecto":1,"nombre_pre_proyecto":1})
+            if paso_uno :
+                #analizamos que se un array y cuantos elementos tiene 
+                contar_conjunto = len(re_proyecto_derivado['conjunto']) 
+                if contar_conjunto>0 :
+                    # verificamos que los json cumplan con el formato , para eso debemos navegar el array
+                    print(re_proyecto_derivado['conjunto'])
+                    for elemento in re_proyecto_derivado['conjunto'] :
+                        print(elemento)
+                        valor_principal = validar_formato(elemento)
+                        print(valor_principal)
+                        if valor_principal :
+                            print(int(elemento['cantidad']))
+                            for _ in range (int(elemento['cantidad'])):
+                                objeto_novo={}
+                                #consultar el id de re_proyecto_derivado
+                                ids_proyectos = await ids_collection.find_one({"id_re_proyecto_derivado": {"$exists": True}})
+                                objeto_novo['created_at'] = datetime.now() 
+                                objeto_novo['id_re_proyecto_derivado'] = ids_proyectos['id_re_proyecto_derivado']+1 if ids_proyectos else 1
+                                objeto_novo['pre_proyecto_id'] = re_proyecto_derivado['pre_proyecto_id']
+                                objeto_novo['pre_derivado_id'] = elemento['pre_derivado_id']
+                                objeto_novo['estado_re_proyecto_derivado'] = 1
+                                objeto_novo['user_c'] = re_proyecto_derivado['user_c']
+
+                                #insertar ese objeto 
+                                guardar_re_proyecto_derivado= await re_proyecto_derivado_collection.insert_one(objeto_novo)
+                                s_ids ={"id_re_proyecto_derivado":objeto_novo['id_re_proyecto_derivado'],"fecha":datetime.now()}
+                                procesar_ids = await ids_collection.update_one({"_id":ids_proyectos['_id'] },{"$set":s_ids}) if ids_proyectos else await ids_collection.insert_one(s_ids)
+                                #proyecto_ok = await re_proyecto_derivado_collection.find_one({"_id": guardar_re_proyecto_derivado.inserted_id},{"_id":0,"pre_proyecto_id":1,"pre_derivado_id":1})
+                                #Guardar en historico
+                                relacion_directa = "proyecto : "+str(objeto_novo['pre_proyecto_id']) +" - " +" derivado : "+str(objeto_novo['pre_derivado_id'])
+                                re_proyecto_derivado_historico = procesar_historico("RELACION proyecto-derivado GUARDADO",re_proyecto_derivado['user_c'],objeto_novo)
+                                guardar_re_proyecto_derivado_historico = await h_re_proyecto_derivado_collection.insert_one(re_proyecto_derivado_historico)
+                                #Guardar en Log 
+                                log =procesar_log("RELACION proyecto-derivado  GUARDADO",re_proyecto_derivado['user_c'],relacion_directa)
+                                guardar_log = await log_general_collection.insert_one(log)
+                            proyecto_ok ="ok"
+                        else:
+                            return "MalFormato"
+                else :
+                    return "FailRelacion"
+            else :
+                return "Fail"
+            #actualizar vida de token 
+            tiempo_extendido =validar_token['fecha_fin'] + timedelta(minutes=30) if re_proyecto_derivado['user_c']==1 else datetime.now() + timedelta(minutes=30)
+            extender_token = await token_proyecto_collection.update_one({"token_proyecto":token_data,"estado_token":1},{"$set":{"fecha_fin":tiempo_extendido}}) 
+            return proyecto_ok
+        else :
+            #cancelar el token 
+            invalidar_token = await token_proyecto_collection.update_one({"token_proyecto":re_proyecto_derivado['token_proyecto'],"estado_token":1},{"$set":{"estado_token":0,"fecha_invalidar":fecha_actual}}) 
+            return "TOKEN_INVALIDO"
+    else :
+        #no hay token valido 
+        return "TOKEN/USER"
+
+
+async def buscar_re(re_proyecto_derivado: dict) -> dict:
+    validar_token = await token_proyecto_collection.find_one({"token_proyecto":re_proyecto_derivado['token_proyecto'],"estado_token":1,"usuario_id":re_proyecto_derivado['id_usuario']},{"_id":0})
+    if validar_token :
+        if validar_token['fecha_fin']>fecha_actual :
+            #consultar todas las relaciones disponibles
+            if re_proyecto_derivado['especifico_proyecto'] :
+                notificacions = []
+                #Consultar proyecto 
+                base = await pre_proyecto_collection.find_one({"id_pre_proyecto":re_proyecto_derivado['especifico_proyecto'],"estado_pre_proyecto":1},{"_id":0})
+                consulta_re ={'pre_proyecto_id':re_proyecto_derivado['especifico_proyecto'],"estado_re_proyecto_derivado":1}
+                async for notificacion in re_proyecto_derivado_collection.find(consulta_re,{"_id":0}).sort({"created_at":-1}):
+                    notificacions.append(notificacion)
+                res = {"pre_proyecto":base['nombre_pre_proyecto'] ,"descripcion":base['observaciones_pre_proyecto'] ,"resultado" :notificacions}
+                #guardar en log
+                log =procesar_log("LISTADO DE RE PROYECTOS POR ",re_proyecto_derivado['id_usuario'],re_proyecto_derivado['especifico_proyecto'])
+                guardar_log = await log_general_collection.insert_one(log)
+                #actualizar vida de token 
+                tiempo_extendido =validar_token['fecha_fin'] + timedelta(minutes=30) if re_proyecto_derivado['id_usuario']==1 else datetime.now() + timedelta(minutes=30)
+                extender_token = await token_proyecto_collection.update_one({"token_proyecto":re_proyecto_derivado['token_proyecto'],"estado_token":1},{"$set":{"fecha_fin":tiempo_extendido}}) 
+                return res
+            else :
+                return "SIN_ESPECIFICO"
+        else :
+            #cancelar el token 
+            invalidar_token = await token_proyecto_collection.update_one({"token_proyecto":re_proyecto_derivado['token_proyecto'],"estado_token":1},{"$set":{"estado_token":0,"fecha_invalidar":fecha_actual}}) 
+            return "TOKEN_INVALIDO"
+    else :
+        #no hay token valido 
+        return "TOKEN_INVALIDO"
+
+
+async def eliminar_re(re_proyecto_derivado: dict) -> dict:
+    validar_token = await token_proyecto_collection.find_one({"token_proyecto":re_proyecto_derivado['token_proyecto'],"estado_token":1,"usuario_id":re_proyecto_derivado['id_usuario']},{"_id":0})
+    if validar_token :
+        if validar_token['fecha_fin']>fecha_actual :
+            #consultar todas las relaciones disponibles
+            if re_proyecto_derivado['especifico_id']:
+            #if re_proyecto_derivado['especifico_proyecto'] and re_proyecto_derivado['especifico_derivado']and re_proyecto_derivado['especifico_id']:
+                #consulta_uno = {'id_re_proyecto_derivado':re_proyecto_derivado['especifico_id'],'pre_derivado_id':re_proyecto_derivado['especifico_derivado'],'pre_proyecto_id':re_proyecto_derivado['especifico_proyecto'],"estado_re_proyecto_derivado":1}
+                consulta_uno = {'id_re_proyecto_derivado':re_proyecto_derivado['especifico_id'],"estado_re_proyecto_derivado":1}
+                especifico = await re_proyecto_derivado_collection.find_one(consulta_uno,{"_id":0})
+                if especifico :
+                    especifico_ok = await re_proyecto_derivado_collection.update_one({"id_re_proyecto_derivado":re_proyecto_derivado['especifico_id'],"estado_re_proyecto_derivado":1},{"$set":{"estado_re_proyecto_derivado":0}})
+                    res = "OK"
+                else :
+                    res = "FAIL"
+                #guardar en log
+                log =procesar_log("relacion proyecto-derivado ELIMINADO ",re_proyecto_derivado['id_usuario'],re_proyecto_derivado['especifico_id'])
+                guardar_log = await log_general_collection.insert_one(log)
+                #actualizar vida de token 
+                tiempo_extendido =validar_token['fecha_fin'] + timedelta(minutes=30) if re_proyecto_derivado['id_usuario']==1 else datetime.now() + timedelta(minutes=30)
+                extender_token = await token_proyecto_collection.update_one({"token_proyecto":re_proyecto_derivado['token_proyecto'],"estado_token":1},{"$set":{"fecha_fin":tiempo_extendido}}) 
+                return res
+            else :
+                return "SIN_ESPECIFICO"
+        else :
+            #cancelar el token 
+            invalidar_token = await token_proyecto_collection.update_one({"token_proyecto":re_proyecto_derivado['token_proyecto'],"estado_token":1},{"$set":{"estado_token":0,"fecha_invalidar":fecha_actual}}) 
+            return "TOKEN_INVALIDO"
+    else :
+        #no hay token valido 
+        return "TOKEN_INVALIDO"
+
+async def listar(re_proyecto_derivado: dict) -> dict:
+    validar_token = await token_proyecto_collection.find_one({"token_proyecto":re_proyecto_derivado['token_proyecto'],"estado_token":1,"usuario_id":re_proyecto_derivado['id_usuario']},{"_id":0})
+    if validar_token :
+        if validar_token['fecha_fin']>fecha_actual :
+            notificacions = []
+            consulta_re ={'estado_pre_derivado':1}
+            async for notificacion in pre_derivado_collection.find(consulta_re,{"_id":0}).sort({"created_at":-1}):
+                notificacions.append(notificacion)
+            res = {"resultado" :notificacions}       
+            #actualizar vida de token 
+            tiempo_extendido =validar_token['fecha_fin'] + timedelta(minutes=30) if re_proyecto_derivado['id_usuario']==1 else datetime.now() + timedelta(minutes=30)
+            extender_token = await token_proyecto_collection.update_one({"token_proyecto":re_proyecto_derivado['token_proyecto'],"estado_token":1},{"$set":{"fecha_fin":tiempo_extendido}}) 
+            return res
+        else :
+            #cancelar el token 
+            invalidar_token = await token_proyecto_collection.update_one({"token_proyecto":re_proyecto_derivado['token_proyecto'],"estado_token":1},{"$set":{"estado_token":0,"fecha_invalidar":fecha_actual}}) 
+            return "TOKEN_INVALIDO"
+    else :
+        #no hay token valido 
+        return "TOKEN_INVALIDO"

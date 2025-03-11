@@ -1,28 +1,26 @@
-from typing import Optional,List
+from typing import Optional,List,Union,Dict
 from datetime import  datetime
 from pydantic import BaseModel, Field
 
 class ReProyectoDerivadoSchema(BaseModel) :
-    id_re_proyecto_derivado:Optional[int] | None =0
-    pre_derivado_id :int = Field(...)
+    #id_re_proyecto_derivado:Optional[int] | None =0
     pre_proyecto_id :int = Field(...)
-    estado_re_proyecto_derivado:Optional[int] | None =1
-    updated_at: Optional[datetime] | None =None #generico
+    #conjunto : List[Union[int, str]] =Field(...)
+    conjunto: Optional[List[Dict[str, int]]] = []
+    token_proyecto : Optional[str] | None ="blablabla"
     created_at: Optional[datetime] | None =None #generico
     user_c:Optional[int] | None =0 #generico
-    user_m:Optional[int] | None =None #generico
     class Config:
         json_schema_extra = {
             "example": {
-                "id_re_proyecto_derivado":None,
-                "pre_derivado_id":0,
+                #"id_re_proyecto_derivado":None,
                 "pre_proyecto_id":0,
-                "estado_re_proyecto_derivado":None,
+                #"conjunto" :[{"pre_derivado_id":1,"cantidad":2},{"pre_derivado_id":3,"cantidad":1}]
+                "conjunto" :[{"pre_derivado_id":1,"cantidad":2},{"pre_derivado_id":3,"cantidad":1}],
+
                 "token_proyecto":"0f2adb0aee3de894ac4e28bfce85a54f5",
                 "created_at":None,
-                "updated_at":None,
-                "user_c":0,
-                "user_m":None
+                "user_c":0
             }
         }
 
@@ -31,9 +29,11 @@ class ConsultarSchema(BaseModel):
     tipo_usuario: Optional[int] | None =0
     token_proyecto : Optional[str] | None ="blablabla"
     especifico_proyecto: Optional[int] | None =0
-    especifico_derivado: Optional[int] | None =0
-    fecha_inicio: Optional[str] | None=None
-    fecha_fin: Optional[str] | None =None
+    especifico_derivado: Optional[int] | None =None
+    especifico_id: Optional[int] | None =None
+
+    #fecha_inicio: Optional[str] | None=None
+    #fecha_fin: Optional[str] | None =None
     class Config:
         json_schema_extra = {
             "example": {
@@ -42,8 +42,9 @@ class ConsultarSchema(BaseModel):
                 "token_proyecto":"0f2adb0aee3de894ac4e28bfce85a54f5",
                 "especifico_proyecto" :0,
                 "especifico_derivado" :0,
-                "fecha_inicio" :None,
-                "fecha_fin" :None
+                "especifico_id":0
+                #"fecha_inicio" :None,
+                #"fecha_fin" :None
             }
         }
 
