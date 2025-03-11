@@ -110,6 +110,9 @@ async def buscar_re(re_proyecto_derivado: dict) -> dict:
                 base = await pre_proyecto_collection.find_one({"id_pre_proyecto":re_proyecto_derivado['especifico_proyecto'],"estado_pre_proyecto":1},{"_id":0})
                 consulta_re ={'pre_proyecto_id':re_proyecto_derivado['especifico_proyecto'],"estado_re_proyecto_derivado":1}
                 async for notificacion in re_proyecto_derivado_collection.find(consulta_re,{"_id":0}).sort({"created_at":-1}):
+                    #consultar relacion
+                    relacion = await pre_derivado_collection.find_one({"id_pre_derivado":notificacion['pre_derivado_id']},{"_id":0,"nombre_pre_derivado":1})
+                    notificacion['nombre_pre_derivado']=relacion['nombre_pre_derivado']
                     notificacions.append(notificacion)
                 res = {"pre_proyecto":base['nombre_pre_proyecto'] ,"descripcion":base['observaciones_pre_proyecto'] ,"resultado" :notificacions}
                 #guardar en log
