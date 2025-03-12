@@ -18,9 +18,9 @@ class ArchivoIncidenteSchema(BaseModel) :
             "example": {
                 "id_archivo_incidente":None,
                 "incidente_id":1,
-                "estado_incidente":None
+                "estado_incidente":None,
                 "url_archivo_incidente": "archivos/incidentes/fallo_electrico.png",
-                "descripcion_archivo_incidente" :"Lado superior izquierdo  del techo "
+                "descripcion_archivo_incidente" :"Lado superior izquierdo  del techo ",
                 "created_at":None,
                 "updated_at":None,
                 "user_c":0,
