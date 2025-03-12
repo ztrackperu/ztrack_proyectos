@@ -5,9 +5,9 @@ from pydantic import BaseModel, Field
 class PreProyectosSchema(BaseModel) :
     id_pre_proyecto:Optional[int] | None =0
     nombre_pre_proyecto :str = Field(...)
-    observaciones_pre_proyecto :str = Field(...)
+    descripcion_pre_proyecto :str = Field(...)
     estado_pre_proyecto:Optional[int] | None =1
-    cantidad_pre_derivados :Optional[int] | None =0 
+    #cantidad_pre_derivados :Optional[int] | None =0 
     token_proyecto : Optional[str] | None ="blablabla"
     updated_at: Optional[datetime] | None =None #generico
     created_at: Optional[datetime] | None =None #generico
@@ -18,9 +18,9 @@ class PreProyectosSchema(BaseModel) :
             "example": {
             "id_pre_proyecto":None,
             "nombre_pre_proyecto":"40RH BLAST CHILLER 2XL CON CARACTERISTICAS DE MADURADOR",
-            "observaciones_pre_proyecto":"Piso plano 5 máquinas Reefer nuevas MAGNUM PLUS MP4000 (4 reefer y 1 madurador ambos con sistema de aire forzado)",
+            "descripcion_pre_proyecto":"Piso plano 5 máquinas Reefer nuevas MAGNUM PLUS MP4000 (4 reefer y 1 madurador ambos con sistema de aire forzado)",
             "estado_pre_proyecto":None,
-            "cantidad_pre_derivados":None,
+            #"cantidad_pre_derivados":None,
             "token_proyecto":"0f2adb0aee3de894ac4e28bf",
             "created_at":None,
             "updated_at":None,

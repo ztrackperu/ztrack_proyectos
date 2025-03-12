@@ -32,7 +32,7 @@ class ReProyectoDerivadoEditarSchema(BaseModel) :
     #id_re_proyecto_derivado:Optional[int] | None =0
     pre_proyecto_id :int = Field(...)
     #conjunto : List[Union[int, str]] =Field(...)
-    #suma_valor_pre_proyecto : Optional[int] | None =0 #generico
+    suma_valor_pre_proyecto : Optional[int] | None =0 #generico
     conjunto: Optional[List[Dict[str, int]]] = []
     token_proyecto : Optional[str] | None ="blablabla"
     created_at: Optional[datetime] | None =None #generico
@@ -42,7 +42,7 @@ class ReProyectoDerivadoEditarSchema(BaseModel) :
         json_schema_extra = {
             "example": {
                 #"id_re_proyecto_derivado":None,
-                #"suma_valor_pre_proyecto":0,
+                "suma_valor_pre_proyecto":0,
                 "pre_proyecto_id":0,
                 #"conjunto" :[{"pre_derivado_id":1,"cantidad":2},{"pre_derivado_id":3,"cantidad":1}]
                 #"conjunto" :[{"pre_derivado_id":1,"cantidad":2},{"pre_derivado_id":3,"cantidad":1}],

@@ -5,10 +5,10 @@ from pydantic import BaseModel, Field
 class PreDerivadosSchema(BaseModel) :
     id_pre_derivado:Optional[int] | None =0
     nombre_pre_derivado :str = Field(...)
-    observaciones_pre_derivado :str = Field(...)
+    descripcion_pre_derivado :str = Field(...)
     estado_pre_derivado:Optional[int] | None =1
-    valor_pre_derivado:Optional[int] | None =0
-    cantidad_actividades :Optional[int] | None =0 
+    #valor_pre_derivado:Optional[int] | None =0
+    #cantidad_actividades :Optional[int] | None =0 
     token_proyecto : Optional[str] | None ="blablabla"
     updated_at: Optional[datetime] | None =None #generico
     created_at: Optional[datetime] | None =None #generico
@@ -19,10 +19,10 @@ class PreDerivadosSchema(BaseModel) :
             "example": {
             "id_pre_derivado":None,
             "nombre_pre_derivado":"XL 40 PIES LADO DERECHO",
-            "observaciones_pre_derivado":"Piso plano SIN MAQUINA",
+            "descripcion_pre_derivado":"Piso plano SIN MAQUINA",
             "estado_pre_derivado":None,
-            "valor_pre_derivado":None,
-            "cantidad_actividades":None,
+            #"valor_pre_derivado":None,
+            #"cantidad_actividades":None,
             "token_proyecto":"0f2adb0aee3de894ac4e28bfce85a54f5",
             "created_at":None,
             "updated_at":None,

@@ -3,38 +3,38 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 
 #aqui pedimos las funciones que incluyen nuestro CRUD
-from server.funciones.re_proyecto_derivado import (
-    guardar_re_proyecto_derivado,
-    editar_re_proyecto_derivado,
+from server.funciones.re_derivado_actividad import (
+    guardar_re_derivado_actividad,
+    editar_re_derivado_actividad,
     buscar_re,
     eliminar_re,
     listar,
 )
 #Aqui importamos el modelo necesario para la clase 
-from server.models.re_proyecto_derivado import (
+from server.models.re_derivado_actividad import (
     ErrorResponseModel,
     ResponseModel,
-    ReProyectoDerivadoSchema,
-    ReProyectoDerivadoEditarSchema,
+    ReDerivadoActividadSchema,
+    ReDerivadoActividadEditarSchema,
     ConsultarSchema,
 )
 router = APIRouter()
 
 @router.post("/", response_description="Datos agregados a la base de datos.")
-async def guardar_re_proyecto_derivado_ok(datos: ReProyectoDerivadoSchema = Body(...)):
+async def guardar_re_derivado_actividad_ok(datos: ReDerivadoActividadSchema = Body(...)):
     datos = jsonable_encoder(datos)   
-    new_notificacion = await guardar_re_proyecto_derivado(datos)
+    new_notificacion = await guardar_re_derivado_actividad(datos)
     return ResponseModel(new_notificacion, "ok")
 
 @router.post("/editar", response_description="Datos agregados a la base de datos.")
-async def editar_re_proyecto_derivado_ok(datos: ReProyectoDerivadoEditarSchema = Body(...)):
+async def editar_re_derivado_actividad_ok(datos: ReDerivadoActividadEditarSchema = Body(...)):
     datos = jsonable_encoder(datos)   
-    new_notificacion = await editar_re_proyecto_derivado(datos)
+    new_notificacion = await editar_re_derivado_actividad(datos)
 
     return ResponseModel(new_notificacion, "ok")
 
 @router.post("/buscar", response_description="Datos Listados de los usuarios.")
-async def buscar_re_proyecto_derivado_ok(datos: ConsultarSchema = Body(...)):
+async def buscar_re_derivado_actividad_ok(datos: ConsultarSchema = Body(...)):
     datos = jsonable_encoder(datos) 
     new_notificacion = await buscar_re(datos)
     if  new_notificacion:
@@ -43,7 +43,7 @@ async def buscar_re_proyecto_derivado_ok(datos: ConsultarSchema = Body(...)):
         return ErrorResponseModel("VERIFICA TUS DATOS", 404, "NO SE HA ENCONTRADO")
 
 @router.post("/eliminar", response_description="Datos Listados de los usuarios.")
-async def eliminar_re_proyecto_derivado_ok(datos: ConsultarSchema = Body(...)):
+async def eliminar_re_derivado_actividad_ok(datos: ConsultarSchema = Body(...)):
     datos = jsonable_encoder(datos) 
     new_notificacion = await eliminar_re(datos)
     if  new_notificacion:
