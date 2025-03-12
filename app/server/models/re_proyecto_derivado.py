@@ -33,7 +33,7 @@ class ReProyectoDerivadoEditarSchema(BaseModel) :
     pre_proyecto_id :int = Field(...)
     #conjunto : List[Union[int, str]] =Field(...)
     #suma_valor_pre_proyecto : Optional[int] | None =0 #generico
-    conjunto: Optional[List[Dict[int,str, int]]] = []
+    conjunto: Optional[List[Dict[str, int]]] = []
     token_proyecto : Optional[str] | None ="blablabla"
     created_at: Optional[datetime] | None =None #generico
     user_c:Optional[int] | None =0 #generico

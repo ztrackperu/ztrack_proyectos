@@ -5,6 +5,7 @@ from fastapi.responses import JSONResponse
 #aqui pedimos las funciones que incluyen nuestro CRUD
 from server.funciones.re_proyecto_derivado import (
     guardar_re_proyecto_derivado,
+    editar_re_proyecto_derivado,
     buscar_re,
     eliminar_re,
     listar,
@@ -14,6 +15,7 @@ from server.models.re_proyecto_derivado import (
     ErrorResponseModel,
     ResponseModel,
     ReProyectoDerivadoSchema,
+    ReProyectoDerivadoEditarSchema,
     ConsultarSchema,
 )
 router = APIRouter()
@@ -22,6 +24,12 @@ router = APIRouter()
 async def guardar_re_proyecto_derivado_ok(datos: ReProyectoDerivadoSchema = Body(...)):
     datos = jsonable_encoder(datos)   
     new_notificacion = await guardar_re_proyecto_derivado(datos)
+    return ResponseModel(new_notificacion, "ok")
+
+@router.post("/editar", response_description="Datos agregados a la base de datos.")
+async def editar_re_proyecto_derivado_ok(datos: ReProyectoDerivadoEditarSchema = Body(...)):
+    datos = jsonable_encoder(datos)   
+    new_notificacion = await editar_re_proyecto_derivado(datos)
 
     return ResponseModel(new_notificacion, "ok")
 

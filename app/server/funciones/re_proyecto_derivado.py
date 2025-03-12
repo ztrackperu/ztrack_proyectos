@@ -18,7 +18,7 @@ def procesar_historico(mensaje,user_c,objeto):
     filter_proyecto = {k: v for k, v in objeto.items() if k not in [ 'user_c','user_m','updated_at','created_at']}
     filter_proyecto['mensaje'] = mensaje
     filter_proyecto['user_evento']=user_c
-    filter_proyecto['fecha_evento']=fecha_actual
+    filter_proyecto['fecha_evento']=datetime.now()
     return filter_proyecto
 def procesar_log(evento,usuario,campo) :
     mensaje2 =str(evento)+" : "+str(campo)+" , hecho por : "+str(usuario)
@@ -156,40 +156,22 @@ async def editar_re_proyecto_derivado(re_proyecto_derivado: dict) -> dict:
                                 if objetoA :
                                     if paso_analizar['pre_derivado_id']==elemento['pre_derivado_id'] and paso_analizar['valor_pre_derivado']==elemento['valor_pre_derivado'] and paso_analizar['pre_proyecto_id']==re_proyecto_derivado['pre_proyecto_id']:
                                         #no guardar
-                                        print("sion modificaciones")
+                                        print("sin modificaciones")
                                     else :
                                         #actualizar
-                                        print("ejecutar secuencia")
+                                        objetoB={"valor_pre_derivado":elemento['valor_pre_derivado'],"user_m":re_proyecto_derivado['user_c'],"update_at":datetime.now()}
+                                        actualizar_re = await re_proyecto_derivado_collection.update_one(objetoA,{"$set":objetoB})
+                                        #Guardar en historico
+                                        relacion_directa = "proyecto : "+str(re_proyecto_derivado['pre_proyecto_id']) +" - " +" derivado : "+str(elemento['pre_derivado_id'])
+                                        objetoB['id_re_proyecto_derivado'] =elemento['id_re_proyecto_derivado']
+                                        re_proyecto_derivado_historico = procesar_historico("RELACION proyecto-derivado EDITADO",re_proyecto_derivado['user_c'],objetoB)
+                                        guardar_re_proyecto_derivado_historico = await h_re_proyecto_derivado_collection.insert_one(re_proyecto_derivado_historico)
+                                        #Guardar en Log 
+                                        log =procesar_log("RELACION proyecto-derivado  EDITADO",re_proyecto_derivado['user_c'],relacion_directa)
+                                        guardar_log = await log_general_collection.insert_one(log)
+                                        proyecto_ok ="ok"
                                 else :
                                     return "idFail"
-
-
-
-                                #for _ in range (int(elemento['cantidad'])):
-                                objeto_novo={}
-                                #consultar el id de re_proyecto_derivado
-                                ids_proyectos = await ids_collection.find_one({"id_re_proyecto_derivado": {"$exists": True}})
-                                objeto_novo['created_at'] = datetime.now() 
-                                objeto_novo['id_re_proyecto_derivado'] = ids_proyectos['id_re_proyecto_derivado']+1 if ids_proyectos else 1
-                                objeto_novo['pre_proyecto_id'] = re_proyecto_derivado['pre_proyecto_id']
-                                objeto_novo['pre_derivado_id'] = elemento['pre_derivado_id']
-                                objeto_novo['valor_pre_derivado'] = elemento['valor_pre_derivado']
-                                objeto_novo['estado_re_proyecto_derivado'] = 1
-                                objeto_novo['user_c'] = re_proyecto_derivado['user_c']
-
-                                #insertar ese objeto 
-                                guardar_re_proyecto_derivado= await re_proyecto_derivado_collection.insert_one(objeto_novo)
-                                s_ids ={"id_re_proyecto_derivado":objeto_novo['id_re_proyecto_derivado'],"fecha":datetime.now()}
-                                procesar_ids = await ids_collection.update_one({"_id":ids_proyectos['_id'] },{"$set":s_ids}) if ids_proyectos else await ids_collection.insert_one(s_ids)
-                                #proyecto_ok = await re_proyecto_derivado_collection.find_one({"_id": guardar_re_proyecto_derivado.inserted_id},{"_id":0,"pre_proyecto_id":1,"pre_derivado_id":1})
-                                #Guardar en historico
-                                relacion_directa = "proyecto : "+str(objeto_novo['pre_proyecto_id']) +" - " +" derivado : "+str(objeto_novo['pre_derivado_id'])
-                                re_proyecto_derivado_historico = procesar_historico("RELACION proyecto-derivado GUARDADO",re_proyecto_derivado['user_c'],objeto_novo)
-                                guardar_re_proyecto_derivado_historico = await h_re_proyecto_derivado_collection.insert_one(re_proyecto_derivado_historico)
-                                #Guardar en Log 
-                                log =procesar_log("RELACION proyecto-derivado  GUARDADO",re_proyecto_derivado['user_c'],relacion_directa)
-                                guardar_log = await log_general_collection.insert_one(log)
-                                proyecto_ok ="ok"
                             else:
                                 return "MalFormato"
                     else :
@@ -210,8 +192,6 @@ async def editar_re_proyecto_derivado(re_proyecto_derivado: dict) -> dict:
         #no hay token valido 
         return "TOKEN/USER"
 
-
-
 async def buscar_re(re_proyecto_derivado: dict) -> dict:
     validar_token = await token_proyecto_collection.find_one({"token_proyecto":re_proyecto_derivado['token_proyecto'],"estado_token":1,"usuario_id":re_proyecto_derivado['id_usuario']},{"_id":0})
     if validar_token :
@@ -222,12 +202,14 @@ async def buscar_re(re_proyecto_derivado: dict) -> dict:
                 #Consultar proyecto 
                 base = await pre_proyecto_collection.find_one({"id_pre_proyecto":re_proyecto_derivado['especifico_proyecto'],"estado_pre_proyecto":1},{"_id":0})
                 consulta_re ={'pre_proyecto_id':re_proyecto_derivado['especifico_proyecto'],"estado_re_proyecto_derivado":1}
+                suma_pre_proyecto =0
                 async for notificacion in re_proyecto_derivado_collection.find(consulta_re,{"_id":0}).sort({"created_at":-1}):
                     #consultar relacion
                     relacion = await pre_derivado_collection.find_one({"id_pre_derivado":notificacion['pre_derivado_id']},{"_id":0,"nombre_pre_derivado":1})
                     notificacion['nombre_pre_derivado']=relacion['nombre_pre_derivado']
                     notificacions.append(notificacion)
-                res = {"pre_proyecto":base['nombre_pre_proyecto'] ,"descripcion":base['observaciones_pre_proyecto'] ,"resultado" :notificacions}
+                    suma_pre_proyecto +=int(notificacion['valor_pre_derivado'])
+                res = {"pre_proyecto":base['nombre_pre_proyecto'] ,"descripcion":base['observaciones_pre_proyecto'] ,"valor_pre_derivado":suma_pre_proyecto,"resultado" :notificacions}
                 #guardar en log
                 log =procesar_log("LISTADO DE RE PROYECTOS POR ",re_proyecto_derivado['id_usuario'],re_proyecto_derivado['especifico_proyecto'])
                 guardar_log = await log_general_collection.insert_one(log)

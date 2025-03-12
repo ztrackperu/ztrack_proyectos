@@ -16,7 +16,7 @@ def procesar_historico(mensaje,user_c,objeto):
     filter_proyecto = {k: v for k, v in objeto.items() if k not in [ 'user_c','user_m','updated_at','created_at']}
     filter_proyecto['mensaje'] = mensaje
     filter_proyecto['user_evento']=user_c
-    filter_proyecto['fecha_evento']=fecha_actual
+    filter_proyecto['fecha_evento']=datetime.now()
     return filter_proyecto
 def procesar_log(evento,usuario,campo) :
     mensaje2 =str(evento)+" : "+str(campo)+" , hecho por : "+str(usuario)
