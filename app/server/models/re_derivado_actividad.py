@@ -2,7 +2,6 @@ from typing import Optional,List
 from datetime import  datetime
 from pydantic import BaseModel, Field
 
-
 class ActividadEditarSchema(BaseModel):
     id_re_derivado_actividad: Optional[int] = None
     pre_actividad_id: Optional[int] = None
@@ -42,7 +41,6 @@ class ReDerivadoActividadEditarSchema(BaseModel) :
     token_proyecto : Optional[str] | None ="blablabla"
     created_at: Optional[datetime] | None =None #generico
     user_c:Optional[int] | None =0 #generico
-
     class Config:
         json_schema_extra = {
             "example": {
@@ -53,7 +51,6 @@ class ReDerivadoActividadEditarSchema(BaseModel) :
                 "user_c":0
             }
         }
-
 
 class ConsultarSchema(BaseModel):
     id_usuario: Optional[int] | None =0

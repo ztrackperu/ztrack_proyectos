@@ -2,27 +2,56 @@ from typing import Optional,List
 from datetime import  datetime
 from pydantic import BaseModel, Field
 
+class ValidacionEditarSchema(BaseModel):
+    id_re_actividad_validacion: Optional[int] = None
+    pre_validacion_id: Optional[int] = None
+    unidad_pre_validacion : Optional[str] = "UNIDADES"
+    valor_pre_validacion: Optional[int] = None
+    rango_pre_validacion: Optional[List[int]] = [0,1]  # Lista de enteros
+
+class ValidacionSchema(BaseModel):
+    pre_validacion_id: Optional[int] = None
+    unidad_pre_validacion : Optional[str] = "UNIDADES"
+    valor_pre_validacion: Optional[int] = None
+    rango_pre_validacion: Optional[List[int]] = []  # Lista de enteros
+
 class ReActividadValidacionSchema(BaseModel) :
-    id_re_actividad_validacion :Optional[int] | None =0
-    pre_validacion_id :int = Field(...)
     pre_actividad_id :int = Field(...)
-    estado_re_actividad_validacion[int] | None =1
-    updated_at: Optional[datetime] | None =None #generico
+    estado_re_actividad_validacion:Optional[int] | None =1
+    suma_valor_pre_actividad : Optional[int] | None =0 #generico
+    conjunto: Optional[List[ValidacionSchema]] = []
+    token_proyecto : Optional[str] | None ="blablabla"
     created_at: Optional[datetime] | None =None #generico
     user_c:Optional[int] | None =0 #generico
-    user_m:Optional[int] | None =None #generico
     class Config:
         json_schema_extra = {
             "example": {
-                "id_re_actividad_validacion":None,
-                "pre_validacion_id":0,
                 "pre_actividad_id":0,
                 "estado_re_actividad_validacion":None,
+                "suma_valor_pre_actividad":0,
+                "conjunto" :[{"pre_validacion_id":1,"unidad_pre_validacion":"milimetros","valor_pre_validacion":2,"rango_pre_validacion":[0,2]},
+                {"pre_validacion_id":3,"unidad_pre_validacion":"grados","valor_pre_validacion":1,"rango_pre_validacion":[0,5]}],
                 "token_proyecto":"0f2adb0aee3de894ac4e28bfce85a54f5",
                 "created_at":None,
-                "updated_at":None,
-                "user_c":0,
-                "user_m":None
+                "user_c":0
+            }
+        }
+
+class ReDerivadoActividadEditarSchema(BaseModel) :
+    pre_actividad_id :int = Field(...)
+    conjunto: Optional[List[ValidacionEditarSchema]] = []
+    token_proyecto : Optional[str] | None ="blablabla"
+    created_at: Optional[datetime] | None =None #generico
+    user_c:Optional[int] | None =0 #generico
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "pre_actividad_id":0,
+                "conjunto" :[{"id_re_actividad_validacion":1 ,"pre_validacion_id":1,"unidad_pre_validacion":"milimetros","valor_pre_validacion":2,"rango_pre_validacion":[0,2]},
+                {"id_re_actividad_validacion":2 ,"pre_validacion_id":3,"unidad_pre_validacion":"grados","valor_pre_validacion":1,"rango_pre_validacion":[0,5]}],
+                "token_proyecto":"0f2adb0aee3de894ac4e28bfce85a54f5",
+                "created_at":None,
+                "user_c":0
             }
         }
 
@@ -32,8 +61,8 @@ class ConsultarSchema(BaseModel):
     token_proyecto : Optional[str] | None ="blablabla"
     especifico_actividad: Optional[int] | None =0
     especifico_validacion: Optional[int] | None =0
-    fecha_inicio: Optional[str] | None=None
-    fecha_fin: Optional[str] | None =None
+    fecha_inicio: Optional[datetime] | None=None
+    fecha_fin: Optional[datetime] | None =None
     class Config:
         json_schema_extra = {
             "example": {

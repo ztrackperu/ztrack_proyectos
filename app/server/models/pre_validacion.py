@@ -7,7 +7,7 @@ class PreValidacionSchema(BaseModel) :
     nombre_pre_validacion : str = Field(...)
     descripcion_pre_validacion : str = Field(...)
     estado_pre_validacion :Optional[int] | None =1
-    estandar_pre_validacion : List[Union[int, str]] =Field(...)
+    #estandar_pre_validacion : List[Union[int, str]] =Field(...)
     token_proyecto : Optional[str] | None ="blablabla"
     updated_at: Optional[datetime] | None =None #generico
     created_at: Optional[datetime] | None =None #generico
@@ -21,7 +21,7 @@ class PreValidacionSchema(BaseModel) :
             "nombre_pre_validacion": "MEDICIONES DE NIVEL DE PISO -LADO VERTICAL 1 ",
             "descripcion_pre_validacion":"Se valida los grados de inclinacion /elevacion del piso  ",
             "estado_pre_validacion":None,
-            "estandar_pre_validacion":[-1,1],
+            #"estandar_pre_validacion":[-1,1],
             "token_proyecto":"0f2adb0aee3de894ac4e28bf",
             "created_at":None,
             "updated_at":None,
