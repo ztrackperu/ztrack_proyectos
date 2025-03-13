@@ -56,6 +56,7 @@ class ConsultarSchema(BaseModel):
     id_usuario: Optional[int] | None =0
     tipo_usuario: Optional[int] | None =0
     token_proyecto : Optional[str] | None ="blablabla"
+    especifico_id: Optional[int] | None =0
     especifico_actividad: Optional[int] | None =0
     especifico_derivado: Optional[int] | None =0
     fecha_inicio: Optional[datetime] | None=None
@@ -66,6 +67,7 @@ class ConsultarSchema(BaseModel):
                 "id_usuario": 0,
                 "tipo_usuario": 0,
                 "token_proyecto":"0f2adb0aee3de894ac4e28bfce85a54f5",
+                "especifico_id" :0,
                 "especifico_actividad" :0,
                 "especifico_derivado" :0,
                 "fecha_inicio" :None,
