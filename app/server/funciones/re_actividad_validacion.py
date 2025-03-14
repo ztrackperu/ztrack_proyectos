@@ -223,7 +223,7 @@ async def buscar_re(re_actividad_validacion: dict) -> dict:
                     notificacion['nombre_pre_validacion']=relacion['nombre_pre_validacion']
                     notificacions.append(notificacion)
                     suma_pre_actividad +=int(notificacion['valor_pre_validacion'])
-                res = {"pre_actividad":base['nombre_pre_actividad'] ,"descripcion":base['observaciones_pre_actividad'] ,"valor_pre_validacion":suma_pre_actividad,"resultado" :notificacions}
+                res = {"pre_actividad":base['nombre_pre_actividad'] ,"descripcion":base['descripcion_pre_actividad'] ,"valor_pre_validacion":suma_pre_actividad,"resultado" :notificacions}
                 #guardar en log
                 log =procesar_log("LISTADO DE RE PROYECTOS POR ",re_actividad_validacion['id_usuario'],re_actividad_validacion['especifico_actividad'])
                 guardar_log = await log_general_collection.insert_one(log)
