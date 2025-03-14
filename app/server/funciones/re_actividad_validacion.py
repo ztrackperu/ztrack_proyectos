@@ -165,9 +165,9 @@ async def editar_re_actividad_validacion(re_actividad_validacion: dict) -> dict:
                                         print("sin modificaciones")
                                     else :
                                         #validar que rango_pre_validacion sea un array
-                                        validar_lista = len(paso_analizar['rango_pre_validacion'])
+                                        validar_lista = len(elemento['rango_pre_validacion'])
                                         print("jajajajaja")
-                                        print(paso_analizar['rango_pre_validacion'])
+                                        print(elemento['rango_pre_validacion'])
 
                                         if validar_lista==2 :
                                             #actualizar

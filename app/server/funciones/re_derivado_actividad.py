@@ -149,8 +149,6 @@ async def guardar_re_derivado_actividad(re_derivado_actividad: dict) -> dict:
         #no hay token valido 
         return "TOKEN/USER"
 
-
-
 async def editar_re_derivado_actividad(re_derivado_actividad: dict) -> dict:
     validar_token = await token_proyecto_collection.find_one({"token_proyecto":re_derivado_actividad['token_proyecto'],"estado_token":1,"usuario_id":re_derivado_actividad['user_c']},{"_id":0})
     if validar_token and re_derivado_actividad['user_c']:
@@ -184,9 +182,9 @@ async def editar_re_derivado_actividad(re_derivado_actividad: dict) -> dict:
                                         print("sin modificaciones")
                                     else :
                                         #validar que requisito_pre_actividad sea un array
-                                        validar_lista = analisis_lista(paso_analizar['requisito_pre_actividad'],valores_id)
+                                        validar_lista = analisis_lista(elemento['requisito_pre_actividad'],valores_id)
                                         print("jajajajaja")
-                                        print(paso_analizar['requisito_pre_actividad'])
+                                        print(elemento['requisito_pre_actividad'])
                                         print("jajajajaja")
                                         print(valores_id)
                                         print("jajajajaja")
