@@ -159,7 +159,7 @@ async def editar_re_actividad_validacion(re_actividad_validacion: dict) -> dict:
                                 #comparar para decidir editar 
                                 objetoA = {"id_re_actividad_validacion":elemento['id_re_actividad_validacion'],"estado_re_actividad_validacion":1}
                                 paso_analizar = await re_actividad_validacion_collection.find_one(objetoA,{"_id":0})
-                                if objetoA :
+                                if paso_analizar :
                                     if paso_analizar['unidad_pre_validacion']==elemento['unidad_pre_validacion'] and paso_analizar['rango_pre_validacion']==elemento['rango_pre_validacion'] and paso_analizar['pre_validacion_id']==elemento['pre_validacion_id'] and paso_analizar['valor_pre_validacion']==elemento['valor_pre_validacion'] and paso_analizar['pre_actividad_id']==re_actividad_validacion['pre_actividad_id']:
                                         #no guardar
                                         print("sin modificaciones")

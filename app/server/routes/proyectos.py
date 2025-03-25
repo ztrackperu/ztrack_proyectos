@@ -6,14 +6,37 @@ from fastapi.responses import JSONResponse
 from server.funciones.proyectos import (
     guardar_proyectos,
     check_mongo_connection,
+    seleccionar_plantilla,
+    datos_plantila,
+    
 )
 #Aqui importamos el modelo necesario para la clase 
 from server.models.proyectos import (
     ErrorResponseModel,
     ResponseModel,
     ProyectosSchema,
+    ConsultarSchema,
 )
 router = APIRouter()
+
+@router.post("/listar", response_description="Datos Listados de los usuarios.")
+async def listar_pre_proyecto_ok(datos: ConsultarSchema = Body(...)):
+    datos = jsonable_encoder(datos) 
+    new_notificacion = await seleccionar_plantilla(datos)
+    if  new_notificacion:
+        return ResponseModel(new_notificacion, "ok")
+    else :
+        return ErrorResponseModel("VERIFICA TUS DATOS", 404, "NO SE HA ENCONTRADO")
+
+
+@router.post("/plantilla", response_description="Datos Listados de los usuarios.")
+async def plantilla_pre_proyecto_ok(datos: ConsultarSchema = Body(...)):
+    datos = jsonable_encoder(datos) 
+    new_notificacion = await datos_plantila(datos)
+    if  new_notificacion:
+        return ResponseModel(new_notificacion, "ok")
+    else :
+        return ErrorResponseModel("VERIFICA TUS DATOS", 404, "NO SE HA ENCONTRADO")
 
 @router.get("/health")
 async def health_check():
