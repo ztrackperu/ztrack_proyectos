@@ -13,6 +13,8 @@ from server.routes.pre_validacion import router as PreValidacionRouter
 from server.routes.re_proyecto_derivado import router as ReProyectoDerivadoRouter
 from server.routes.re_derivado_actividad import router as ReDerivadoActividadRouter
 from server.routes.re_actividad_validacion import router as ReActividadValidacionRouter
+from server.routes.pollitos.operaciones import router as PollitosOperacionesRouter
+
 
 
 app = FastAPI(
@@ -39,6 +41,8 @@ app.include_router(PreValidacionRouter, tags=["PreValidacion"], prefix="/PreVali
 app.include_router(ReProyectoDerivadoRouter, tags=["ReProyectoDerivado"], prefix="/ReProyectoDerivado")
 app.include_router(ReDerivadoActividadRouter, tags=["ReDerivadoActividad"], prefix="/ReDerivadoActividad")
 app.include_router(ReActividadValidacionRouter, tags=["ReActividadValidacion"], prefix="/ReActividadValidacion")
+app.include_router(PollitosOperacionesRouter, tags=["PollitosOperaciones"], prefix="/PollitosOperaciones")
+
 
 
 
