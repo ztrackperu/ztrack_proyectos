@@ -57,7 +57,7 @@ async def guardar_operaciones(operaciones_data: dict) -> dict:
             s_ids ={"id_operacion":operaciones_data['id_operacion'],"fecha":datetime.now()}
             procesar_ids = await ids_collection.update_one({"_id":ids_proyectos['_id'] },{"$set":s_ids}) if ids_proyectos else await ids_collection.insert_one(s_ids)
             proyecto_ok = await operaciones_collection.find_one({"_id": guardar_operaciones.inserted_id},{"_id":0,"id_operacion":1,"titulo_operacion":1})
-            s_control ={"created_at":operaciones_data['created_at'],"condicion_control":"INICIO" ,"operacion_id":proyecto_ok['id_operacion'],"cantidad_control":3000,"user_c":operaciones_data['user_c']}
+            s_control ={"created_at":operaciones_data['created_at'],"condicion_control":"INICIO" ,"operacion_id":proyecto_ok['id_operacion'],"cantidad_control":operaciones_data['cantidad_control'],"user_c":operaciones_data['user_c']}
             procesar_control = await guardar_control(s_control)
             print("----------------")
             print(procesar_control)
