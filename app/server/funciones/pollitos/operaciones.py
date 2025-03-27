@@ -10,9 +10,9 @@ from server.funciones.pollitos.control import guardar_control
 #token_proyecto_collection =  collection("token_proyecto")
 log_general_collection =  collection("log_general")
 operaciones_collection = collection("operaciones")
-control_collection = collection("control")
+#control_collection = collection("control")
 ids_collection = collection("ids_proyectos")
-h_control_collection = collection("h_control")
+#h_control_collection = collection("h_control")
 h_operaciones_collection = collection("h_operaciones")
 fecha_actual =datetime.now()
 

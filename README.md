@@ -45,3 +45,10 @@ pip install "fastapi[all]"
 -> se ejecuta 
 python app/main.py
 
+
+#Atrapar objeto JSON desde POST 
+
+$datosRecibidos = file_get_contents("php://input");
+$contenedor = json_decode($datosRecibidos);
+$primerFiltro = $contenedor->tipo ;
+$segundoFiltro = $contenedor->nombre_contenedor;
