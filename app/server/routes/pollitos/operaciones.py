@@ -5,10 +5,10 @@ from fastapi.responses import JSONResponse
 #aqui pedimos las funciones que incluyen nuestro CRUD
 from server.funciones.pollitos.operaciones import (
     guardar_operaciones,
-    #listar_operaciones,
-    #ver_operaciones,
-    #eliminar_operaciones,
-    #reestablecer_operaciones,   
+    listar_operaciones,
+    ver_operaciones,
+    eliminar_operaciones,
+    reestablecer_operaciones,   
 )
 #Aqui importamos el modelo necesario para la clase 
 from server.models.pollitos.operaciones import (
