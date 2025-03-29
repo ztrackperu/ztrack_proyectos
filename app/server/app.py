@@ -14,6 +14,7 @@ from server.routes.re_proyecto_derivado import router as ReProyectoDerivadoRoute
 from server.routes.re_derivado_actividad import router as ReDerivadoActividadRouter
 from server.routes.re_actividad_validacion import router as ReActividadValidacionRouter
 from server.routes.pollitos.operaciones import router as PollitosOperacionesRouter
+from server.routes.pollitos.control import router as PollitosControlRouter
 
 
 
@@ -42,6 +43,7 @@ app.include_router(ReProyectoDerivadoRouter, tags=["ReProyectoDerivado"], prefix
 app.include_router(ReDerivadoActividadRouter, tags=["ReDerivadoActividad"], prefix="/ReDerivadoActividad")
 app.include_router(ReActividadValidacionRouter, tags=["ReActividadValidacion"], prefix="/ReActividadValidacion")
 app.include_router(PollitosOperacionesRouter, tags=["PollitosOperaciones"], prefix="/PollitosOperaciones")
+app.include_router(PollitosControlRouter, tags=["PollitosControl"], prefix="/PollitosControl")
 
 
 

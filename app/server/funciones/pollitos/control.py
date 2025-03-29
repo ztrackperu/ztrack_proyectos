@@ -167,35 +167,23 @@ async def ver_control(control_data: dict) -> dict:
         return "TOKEN_INVALIDO"
 
 async def listar_control(control_data: dict) -> dict:
-    validar_token = await token_proyecto_collection.find_one({"token_proyecto":control_data['token_proyecto'],"estado_token":1,"usuario_id":control_data['id_usuario']},{"_id":0})
-    if validar_token :
-        if validar_token['fecha_fin']>fecha_actual :
             notificacions = []
             fecha_inicio = convertir_fecha_inicio(control_data['fecha_inicio']) if control_data['fecha_inicio'] else datetime.now() - timedelta(days=30)
             fecha_fin = convertir_fecha_fin(control_data['fecha_fin']) if control_data['fecha_fin'] else datetime.now() 
             #logica si funciona
-            if control_data['tipo_usuario']==1 :
+            if control_data['id_usuario']==1 :
                 query = {"created_at": {"$gte": fecha_inicio, "$lte": fecha_fin}}
                 #query = {"estado_control":1}
-            elif control_data['tipo_usuario']==2 :
-                query = {"created_at": {"$gte": fecha_inicio, "$lte": fecha_fin},"estado_control":1}
-                #query = {"estado_control":1,"user_c":control_data['id_usuario']}
             else :
                 query = {"created_at": {"$gte": fecha_inicio, "$lte": fecha_fin},"estado_control":1,"user_c":control_data['id_usuario']}
-            async for notificacion in control_collection.find(query,{"_id":0,"id_control":1,"nombre_control":1,"observaciones_control":1,"estado_control":1,"created_at":1}).sort({"created_at":-1}):
+            async for notificacion in control_collection.find(query,{"_id":0,"id_control":1,"condicion_control":1,"cantidad_control":1,"created_at":1}).sort({"created_at":-1}):
                 notificacions.append(notificacion)
             res = {"fecha_inicio" :fecha_inicio,"fecha_fin" :fecha_fin ,"resultado" :notificacions}
             #guardar en log
             log =procesar_log("LISTADO DE PROYECTOS POR ",control_data['id_usuario'],"TODOS")
             guardar_log = await log_general_collection.insert_one(log)
             return res 
-        else :
-            #cancelar el token 
-            invalidar_token = await token_proyecto_collection.update_one({"token_proyecto":control_data['token_proyecto'],"estado_token":1},{"$set":{"estado_token":0,"fecha_invalidar":fecha_actual}}) 
-            return "TOKEN_INVALIDO"
-    else :
-        #no hay token valido 
-        return "TOKEN_INVALIDO"
+       
 
 async def eliminar_control(control_data: dict) -> dict:
     validar_token = await token_proyecto_collection.find_one({"token_proyecto":control_data['token_proyecto'],"estado_token":1,"usuario_id":control_data['id_usuario']},{"_id":0})
