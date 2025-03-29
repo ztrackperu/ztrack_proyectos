@@ -7,7 +7,7 @@ class ControlSchema(BaseModel) :
     operacion_id : int = Field(...)
     condicion_control :Optional[str] | None ="INICIO"
     descripcion_control : Optional[str] | None ="SIN DESCRIPCION"
-    cantidad_control :str = Field(...)
+    cantidad_control :int = Field(...)
     merma_control : Optional[int] | None =0
     peso_control : Optional[str] | None ="SIN PESO"
     temperatura_control : Optional[str] | None ="SIN TEMPERATURA"

@@ -246,3 +246,25 @@ async def reestablecer_control(control_data: dict) -> dict:
         #no hay token valido 
         return "TOKEN_INVALIDO"
 
+
+async def buscar_control(control_data: dict) -> dict:
+        if control_data['especifico'] :
+            notificacions = []
+            fecha_inicio = convertir_fecha_inicio(control_data['fecha_inicio']) if control_data['fecha_inicio'] else datetime.now() - timedelta(days=30)
+            fecha_fin = convertir_fecha_fin(control_data['fecha_fin']) if control_data['fecha_fin'] else datetime.now() 
+            #logica si funciona
+            if control_data['id_usuario']==1 :
+                query = {"operacion_id":control_data['especifico'], "created_at": {"$gte": fecha_inicio, "$lte": fecha_fin}}
+                #query = {"estado_control":1}
+            else :
+                query = {"created_at": {"$gte": fecha_inicio, "$lte": fecha_fin},"estado_control":1,"user_c":control_data['id_usuario']}
+            async for notificacion in control_collection.find(query,{"_id":0,"id_control":1,"condicion_control":1,"cantidad_control":1,"created_at":1,"merma_control":1, "peso_control":1, "temperatura_control":1, "estado_control":1, "fecha_control":1}).sort({"created_at":-1}):
+                notificacions.append(notificacion)
+            res = {"fecha_inicio" :fecha_inicio,"fecha_fin" :fecha_fin ,"resultado" :notificacions}
+            #guardar en log
+            log =procesar_log("LISTADO DE PROYECTOS POR ",control_data['id_usuario'],"TODOS")
+            guardar_log = await log_general_collection.insert_one(log)
+            return res 
+        else :
+                return "SIN_ESPECIFICO"
+       

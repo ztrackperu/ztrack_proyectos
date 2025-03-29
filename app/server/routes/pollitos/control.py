@@ -6,6 +6,7 @@ from fastapi.responses import JSONResponse
 from server.funciones.pollitos.control import (
     guardar_control,
     listar_control,
+    buscar_control,
     ver_control,
     eliminar_control,
     reestablecer_control,   
@@ -63,3 +64,13 @@ async def reestablecer_control_ok(datos: ConsultarSchema = Body(...)):
     else :
         return ErrorResponseModel("verifica tus datos", 404, "NO SE HA ENCONTRADO")
     
+
+@router.post("/buscar", response_description="Datos Listados de los usuarios.")
+async def buscar_control_ok(datos: ConsultarSchema = Body(...)):
+    datos = jsonable_encoder(datos) 
+    print ("Hola estoy aca")
+    new_notificacion = await buscar_control(datos)
+    if  new_notificacion:
+        return ResponseModel(new_notificacion, "ok")
+    else :
+        return ErrorResponseModel("VERIFICA TUS DATOS", 404, "NO SE HA ENCONTRADO")
