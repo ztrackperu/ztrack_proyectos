@@ -40,6 +40,7 @@ async def listar_control_ok(datos: ConsultarSchema = Body(...)):
 @router.post("/ver", response_description="Datos Listados de los usuarios.")
 async def ver_control_ok(datos: ConsultarSchema = Body(...)):
     datos = jsonable_encoder(datos) 
+    print ("Hola estoy aca", datos)
     new_notificacion = await ver_control(datos)
     if  new_notificacion:
         return ResponseModel(new_notificacion, "ok")

@@ -143,9 +143,11 @@ async def guardar_control_2(control_data: dict) -> dict:
 
 
 async def ver_control(control_data: dict) -> dict:
+    
     if control_data['especifico']:
         #realizar secuencia para ver informacion especifica 
-        especifico = await control_collection.find_one({"id_control":control_data['especifico'],"estado_control":1},{"_id":0 })             
+        especifico = await control_collection.find_one({"id_control":control_data['especifico'],"estado_control":1},{"_id":0 })    
+              
         #Guardar en Log 
         log =procesar_log("Se solicito info de Control :  ",control_data['id_usuario'],control_data['especifico'])
         guardar_log = await log_general_collection.insert_one(log)
