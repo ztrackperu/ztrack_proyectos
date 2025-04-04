@@ -3,7 +3,6 @@ import json
 #from server.database import collection 
 from server.database import database_mongo ,client,collection
 from datetime import datetime,timedelta
-from server.funciones.pollitos.evidencia import evidencia_collection
 
 
 #Estanadar para funciones de agregar , editar , buscar , listar 
@@ -143,36 +142,18 @@ async def guardar_control_2(control_data: dict) -> dict:
         return "TOKEN/USER"
 
 
-# Modificar la función ver_control
 async def ver_control(control_data: dict) -> dict:
+    
     if control_data['especifico']:
-        # Realizar secuencia para ver información específica
-        especifico = await control_collection.find_one({"id_control":control_data['especifico'],"estado_control":1},{"_id":0})
-        
-        # Si se encuentra el control, buscar sus evidencias
-        if especifico:
-            # Buscar evidencias relacionadas
-            evidencias = []
-            async for evidencia in evidencia_collection.find(
-                {"tipo_entidad": "control", "entidad_id": control_data['especifico'], "estado_evidencia": 1},
-                {"_id": 0}
-            ):
-                evidencias.append(evidencia)
-            
-            # Añadir evidencias al resultado
-            especifico["evidencias"] = evidencias
-            
-            # Guardar en Log
-            log = procesar_log("Se solicito info de Control :  ", control_data['id_usuario'], control_data['especifico'])
-            guardar_log = await log_general_collection.insert_one(log)
-            
-            return especifico
-        else:
-            # No se encontró el control
-            return None
-    else:
-        return None  # Cambiado de "SIN_ESPECIFICO" a None para que la condición en la ruta funcione correctamente
-
+        #realizar secuencia para ver informacion especifica 
+        especifico = await control_collection.find_one({"id_control":control_data['especifico'],"estado_control":1},{"_id":0 })    
+              
+        #Guardar en Log 
+        log =procesar_log("Se solicito info de Control :  ",control_data['id_usuario'],control_data['especifico'])
+        guardar_log = await log_general_collection.insert_one(log)
+        return especifico
+    else :
+        return "SIN_ESPECIFICO"
 
 async def listar_control(control_data: dict) -> dict:
             notificacions = []
@@ -245,7 +226,7 @@ async def buscar_control(control_data: dict) -> dict:
                 notificacions.append(notificacion)
             res = {"fecha_inicio" :fecha_inicio,"fecha_fin" :fecha_fin ,"resultado" :notificacions}
             #guardar en log
-            log =procesar_log("BUSQUEDA DE CONTROL POR ",control_data['id_usuario'],"TODOS")
+            log =procesar_log("LISTADO DE PROYECTOS POR ",control_data['id_usuario'],"TODOS")
             guardar_log = await log_general_collection.insert_one(log)
             return res 
         else :

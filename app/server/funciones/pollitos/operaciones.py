@@ -4,6 +4,7 @@ import json
 from server.database import database_mongo ,client,collection
 from datetime import datetime,timedelta
 from server.funciones.pollitos.control import guardar_control
+from server.funciones.pollitos.evidencia import evidencia_collection
 
 
 #Estanadar para funciones de agregar , editar , buscar , listar 
@@ -89,17 +90,35 @@ async def guardar_operaciones(operaciones_data: dict) -> dict:
     return proyecto_ok
 
 
+# Modificar la función ver_operaciones
 async def ver_operaciones(operaciones_data: dict) -> dict:
     if operaciones_data['especifico']:
-        #realizar secuencia para ver informacion especifica 
-        especifico = await operaciones_collection.find_one({"id_operacion":operaciones_data['especifico'],"estado_operacion":1},{"_id":0 })             
-        #Guardar en Log 
-        log =procesar_log("Se solicito info de Operacion :  ",operaciones_data['id_usuario'],operaciones_data['especifico'])
-        guardar_log = await log_general_collection.insert_one(log)
-        return especifico
-    else :
-        return "SIN_ESPECIFICO"
-
+        # Realizar secuencia para ver información específica
+        especifico = await operaciones_collection.find_one({"id_operacion":operaciones_data['especifico'],"estado_operacion":1},{"_id":0})
+        
+        # Si se encuentra la operación, buscar sus evidencias
+        if especifico:
+            # Buscar evidencias relacionadas
+            evidencias = []
+            async for evidencia in evidencia_collection.find(
+                {"tipo_entidad": "operacion", "entidad_id": operaciones_data['especifico'], "estado_evidencia": 1},
+                {"_id": 0}
+            ):
+                evidencias.append(evidencia)
+            
+            # Añadir evidencias al resultado
+            especifico["evidencias"] = evidencias
+            
+            # Guardar en Log
+            log = procesar_log("Se solicito info de Operacion :  ", operaciones_data['id_usuario'], operaciones_data['especifico'])
+            guardar_log = await log_general_collection.insert_one(log)
+            
+            return especifico
+        else:
+            # No se encontró la operación
+            return None
+    else:
+        return None  # Cambiado de "SIN_ESPECIFICO" a None para que la condición en la ruta funcione correctamente
 
 async def listar_operaciones(operaciones_data: dict) -> dict:
     notificacions = []

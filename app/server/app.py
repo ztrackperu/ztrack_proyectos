@@ -15,7 +15,7 @@ from server.routes.re_derivado_actividad import router as ReDerivadoActividadRou
 from server.routes.re_actividad_validacion import router as ReActividadValidacionRouter
 from server.routes.pollitos.operaciones import router as PollitosOperacionesRouter
 from server.routes.pollitos.control import router as PollitosControlRouter
-
+from server.routes.pollitos.evidencia import router as evidencia_router
 
 
 app = FastAPI(
@@ -44,6 +44,7 @@ app.include_router(ReDerivadoActividadRouter, tags=["ReDerivadoActividad"], pref
 app.include_router(ReActividadValidacionRouter, tags=["ReActividadValidacion"], prefix="/ReActividadValidacion")
 app.include_router(PollitosOperacionesRouter, tags=["PollitosOperaciones"], prefix="/PollitosOperaciones")
 app.include_router(PollitosControlRouter, tags=["PollitosControl"], prefix="/PollitosControl")
+app.include_router(evidencia_router, tags=["Evidencias"], prefix="/evidencia")
 
 
 
