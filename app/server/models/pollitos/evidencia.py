@@ -11,7 +11,13 @@ class EvidenciaSchema(BaseModel):
     temperatura_evidencia: Optional[str] | None = None
     parametro_1_evidencia: Optional[str] | None = None
     observacion_evidencia: Optional[str] | None = "SIN OBSERVACION"
-    link_evidencia: str = Field(...)  # URL o ruta al archivo
+    link_evidencia: Optional[str] | None = None  # URL o ruta a la foto
+    
+    # Nuevos campos para archivos
+    archivo_evidencia: Optional[str] | None = None  # URL o ruta al archivo
+    archivo_nombre: Optional[str] | None = None  # Nombre original del archivo
+    archivo_tipo: Optional[str] | None = None  # Tipo MIME del archivo
+    
     fecha_evidencia: Optional[datetime] | None = None
     estado_evidencia: Optional[int] | None = 1
     updated_at: Optional[datetime] | None = None
@@ -30,7 +36,10 @@ class EvidenciaSchema(BaseModel):
                 "temperatura_evidencia": "30.5 C°",
                 "parametro_1_evidencia": None,
                 "observacion_evidencia": None,
-                "link_evidencia": "https://ejemplo.com/imagen.jpg",  # URL externa
+                "link_evidencia": "https://ejemplo.com/imagen.jpg",  # URL externa para foto
+                "archivo_evidencia": "https://ejemplo.com/documento.pdf",  # URL externa para archivo
+                "archivo_nombre": "informe_tecnico.pdf",
+                "archivo_tipo": "application/pdf",
                 "fecha_evidencia": None,
                 "estado_evidencia": None,
                 "created_at": None,
@@ -39,6 +48,7 @@ class EvidenciaSchema(BaseModel):
                 "user_m": None
             }
         }
+
 
 class ConsultarSchema(BaseModel):
     id_usuario: int = Field(...)
