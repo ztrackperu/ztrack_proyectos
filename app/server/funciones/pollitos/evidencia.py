@@ -126,10 +126,6 @@ async def guardar_evidencia(evidencia_data: dict) -> dict:
         if not evidencia_data.get('fecha_evidencia'):
             evidencia_data['fecha_evidencia'] = datetime.now()
         
-        # Validar que haya al menos un tipo de evidencia (foto o archivo)
-        if not evidencia_data.get('link_evidencia') and not evidencia_data.get('archivo_evidencia'):
-            return "ERROR: Se requiere al menos una foto o un archivo"
-        
         # Obtener nuevo ID
         ids_proyectos = await ids_collection.find_one({"id_evidencia": {"$exists": True}})
         evidencia_data['created_at'] = datetime.now()
@@ -160,51 +156,62 @@ async def guardar_evidencia(evidencia_data: dict) -> dict:
         )
         await h_evidencia_collection.insert_one(evidencia_historico)
         
+        # Guardar en Log
+        log = procesar_log(
+            "EVIDENCIA GUARDADA",
+            evidencia_data['user_c'],
+            evidencia_data['titulo_evidencia']
+        )
+        await log_general_collection.insert_one(log)
+        
         return proyecto_ok
     else:
         # Actualizar evidencia existente
-        evidencia_data['updated_at'] = datetime.now()
-        
-        # Verificar si existe la evidencia a actualizar
-        evidencia_existente = await evidencia_collection.find_one({
-            "id_evidencia": id_value,
-            "estado_evidencia": 1
-        })
-        
-        if not evidencia_existente:
-            return "NO EXISTE"
-        
-        # Validar que haya al menos un tipo de evidencia (foto o archivo)
-        # Si ya existe un link o archivo en la BD, no requerimos uno nuevo
-        if (not evidencia_data.get('link_evidencia') and not evidencia_data.get('archivo_evidencia') and
-            not evidencia_existente.get('link_evidencia') and not evidencia_existente.get('archivo_evidencia')):
-            return "ERROR: Se requiere al menos una foto o un archivo"
-        
-        # Filtrar campos None para no sobrescribir datos existentes
-        datos_actualizacion = filtrar_no_none(evidencia_data)
-        
-        # Actualizar en la base de datos
-        await evidencia_collection.update_one(
-            {"id_evidencia": id_value},
-            {"$set": datos_actualizacion}
-        )
-        
-        # Obtener evidencia actualizada
-        proyecto_ok = await evidencia_collection.find_one(
-            {"id_evidencia": id_value},
-            {"_id": 0, "id_evidencia": 1, "titulo_evidencia": 1}
-        )
-        
-        # Guardar en histórico
-        evidencia_historico = procesar_historico(
-            f"EVIDENCIA ACTUALIZADA PARA {evidencia_data['tipo_entidad'].upper()}",
-            evidencia_data['user_m'],
-            evidencia_data['id_evidencia'],
-            "evidencia"
-        )
-        await h_evidencia_collection.insert_one(evidencia_historico)
-        
-        return proyecto_ok
+        if coincidencia_dato is None or coincidencia_dato['id_evidencia'] == id_value:
+            # Se actualiza la información
+            evidencia_data['updated_at'] = datetime.now()
+            evidencia_data['user_m'] = evidencia_data.get('user_c')
+            
+            # Filtrar campos para actualizar, excluyendo campos que no deben modificarse
+            filter_evidencia = {k: v for k, v in evidencia_data.items() 
+                               if k not in ['id_evidencia', 'user_c', 'created_at']}
+            
+            # Filtrar campos None para no sobrescribir datos existentes
+            filter_evidencia2 = filtrar_no_none(filter_evidencia)
+            
+            # Actualizar en la base de datos
+            await evidencia_collection.update_one(
+                {"id_evidencia": id_value, "estado_evidencia": 1},
+                {"$set": filter_evidencia2}
+            )
+            
+            # Obtener evidencia actualizada
+            proyecto_ok = await evidencia_collection.find_one(
+                {"id_evidencia": id_value},
+                {"_id": 0, "id_evidencia": 1, "titulo_evidencia": 1}
+            )
+            
+            # Guardar en histórico
+            evidencia_historico = procesar_historico(
+                f"EVIDENCIA ACTUALIZADA PARA {evidencia_data['tipo_entidad'].upper()}",
+                evidencia_data['user_m'],
+                id_value,
+                "evidencia"
+            )
+            await h_evidencia_collection.insert_one(evidencia_historico)
+            
+            # Guardar en Log
+            log = procesar_log(
+                "EVIDENCIA EDITADA por",
+                evidencia_data['user_m'],
+                id_value
+            )
+            await log_general_collection.insert_one(log)
+            
+            return proyecto_ok
+        else:
+            return "DUPLICADO"
+
 
 async def listar_evidencias(evidencia_data: dict) -> dict:
     """
